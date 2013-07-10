@@ -4,8 +4,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import static org.bukkit.ChatColor.*;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.event.Event.Result;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 import net.milkycraft.em.config.Option;
 import net.milkycraft.em.config.WorldConfiguration;
@@ -22,19 +25,19 @@ public abstract class Utility {
 		Bukkit.getPluginManager().registerEvents(listener, manager);
 	}
 
-	public WorldConfiguration get(String world) {
-		try {
-			return manager.getWorld(world);
-		} catch (NullPointerException ex) {
-			manager.warn("No config found for " + world
-					+ ", generating one now");
-			manager.load();
-			return manager.getWorld(world);
-		}
+	public void c(PlayerInteractEvent e) {
+		e.setCancelled(true);
+		e.setUseItemInHand(Result.DENY);
 	}
-
-	public EntityManager getHandle() {
-		return this.manager;
+	
+	public boolean a(WorldConfiguration conf, Player p, String name) {
+		if (conf.get(Option.PVP)
+				&& !p.hasPermission("entitymanager.interact.pvp")) {
+			alert(conf, "Player " + p.getName() + " tried to attack " + name);
+			alert(conf, p, "&cYou don't have permission to pvp.");
+			return true;
+		}
+		return false;
 	}
 
 	public void alert(WorldConfiguration conf, String adminMsg) {
@@ -42,7 +45,7 @@ public abstract class Utility {
 			adminAlert(adminMsg, conf.getWorld());
 		}
 		if (conf.get(Option.LOGGING)) {
-			manager.info(adminMsg);
+			manager.getLogger().info(adminMsg);
 		}
 	}
 
@@ -58,6 +61,20 @@ public abstract class Utility {
 			if(p.hasPermission("entitymanager.admin.alert")) {
 				p.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
 			}
+		}
+	}
+	
+	public EntityManager getHandle() {
+		return this.manager;
+	}
+	
+	public WorldConfiguration get(String world) {
+		try {
+			return manager.getWorld(world);
+		} catch (NullPointerException ex) {
+			manager.getLogger().warning("No config found for " + world
+					+ ", generating one now");
+			return manager.getWorld(world);
 		}
 	}
 }
