@@ -1,8 +1,9 @@
-# EntityManager Configuration v5.1.3
+# EntityManager Configuration v5.1.9b
 # Blocked items require permission to override 
 # Do NOT change Config_Revision unless you want unexpected errors!
+# Potion blocking - 'Potion:(potionid)' - Can block from dispensers and usage
 Settings:
-  Config_Revision: 1.3
+  Config_Revision: 1.4
   Admin-Alerts: true
   Player-Alerts: true
   Logging: true
@@ -22,6 +23,7 @@ Disable:
     Blocked_Items:
     - Exp_Bottle
     - Fireball
+    - Potion:16394
   Dispensing:
     Blocked_Items:
     - Bedrock
