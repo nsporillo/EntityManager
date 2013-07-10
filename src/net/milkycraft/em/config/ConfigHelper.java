@@ -5,29 +5,22 @@ import org.bukkit.potion.PotionType;
 
 public class ConfigHelper {
 
-	private static final int EXTENDED_BIT = 0x40;
-	private static final int POTION_BIT = 0xF;
-	private static final int SPLASH_BIT = 0x4000;
-	private static final int TIER_BIT = 0x20;
-	private static final int TIER_SHIFT = 5;
-	private static final int NAME_BIT = 0x3F;
-
 	public static Potion fromDamage(int damage) {
-		PotionType type = PotionType.getByDamageValue(damage & POTION_BIT);
+		PotionType type = PotionType.getByDamageValue(damage & 0xF);
 		Potion potion;
 		if (type == null || (type == PotionType.WATER && damage != 0)) {
-			potion = new Potion(damage & NAME_BIT);
+			potion = new Potion(damage & 0x3F);
 		} else {
-			int level = (damage & TIER_BIT) >> TIER_SHIFT;
+			int level = (damage & 0x20) >> 5;
 			level++;
 			potion = new Potion(type, level);
 		}
-		if ((damage & SPLASH_BIT) > 0) {
+		if ((damage & 0x4000) > 0) {
 			potion = potion.splash();
 		}
-		if ((damage & EXTENDED_BIT) > 0) {
+		if ((damage & 0x40) > 0) {
 			potion = potion.extend();
 		}
-		return potion;	
+		return potion;
 	}
 }
