@@ -25,11 +25,6 @@ public abstract class Utility {
 		Bukkit.getPluginManager().registerEvents(listener, manager);
 	}
 
-	public void c(PlayerInteractEvent e) {
-		e.setCancelled(true);
-		e.setUseItemInHand(Result.DENY);
-	}
-	
 	public boolean a(WorldConfiguration conf, Player p, String name) {
 		if (conf.get(Option.PVP)
 				&& !p.hasPermission("entitymanager.interact.pvp")) {
@@ -38,6 +33,11 @@ public abstract class Utility {
 			return true;
 		}
 		return false;
+	}
+	
+	public void c(PlayerInteractEvent e) {
+		e.setCancelled(true);
+		e.setUseItemInHand(Result.DENY);
 	}
 
 	public void alert(WorldConfiguration conf, String adminMsg) {
@@ -72,8 +72,8 @@ public abstract class Utility {
 		try {
 			return manager.getWorld(world);
 		} catch (NullPointerException ex) {
-			manager.getLogger().warning("No config found for " + world
-					+ ", generating one now");
+			manager.getLogger().warning("No config found for " + world + ", generating one now");
+			manager.load();
 			return manager.getWorld(world);
 		}
 	}
