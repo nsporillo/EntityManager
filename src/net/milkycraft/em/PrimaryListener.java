@@ -26,11 +26,11 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.Potion;
 
 public class PrimaryListener extends Utility implements Listener {
@@ -80,17 +80,20 @@ public class PrimaryListener extends Utility implements Listener {
 				}
 			} else if (conf.getBlockedUsage().contains(e.getItem().getType())) {
 				if (e.getItem().getType() == Material.POTION) {
-					ItemStack is = e.getItem();
-					Potion b = ConfigHelper.fromDamage(is.getDurability());
-					if (conf.getPotions().contains(b)) {
+					Potion b = ConfigHelper.fromDamage(e.getItem()
+							.getDurability());
+					if (pl.hasPermission("entitymanager.interact.potion."
+							+ b.getNameId())) {
+						return;
+					}
+					if (conf.getPotions().contains(b.getNameId())) {
+						String pot = b.getType().name().toLowerCase();
 						this.c(e);
 						alert(conf, "Player " + pl.getName()
-								+ " tried to use an " + b.getType().name()
-								+ " potion" + ".");
+								+ " tried to use an " + pot + " potion" + ".");
 						alert(conf, pl,
 								"&cYou don't have permission to use that &6"
-										+ b.getType().name() + " potion"
-										+ "&c.");
+										+ pot + " potion" + "&c.");
 					}
 					return;
 				}
@@ -223,6 +226,29 @@ public class PrimaryListener extends Utility implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onPotionSplash(PotionSplashEvent e) {
+		if (e.getEntity().getShooter() instanceof Player) {
+			Player p = (Player) e.getEntity().getShooter();
+			WorldConfiguration conf = get(p.getWorld().getName());
+			Potion b = ConfigHelper.fromDamage(e.getPotion().getItem()
+					.getDurability());
+			if (p.hasPermission("entitymanager.interact.potion."
+					+ b.getNameId())) {
+				return;
+			}
+			if (conf.getPotions().contains(b.getNameId())) {
+				String pot = b.getType().name().toLowerCase();
+				e.setCancelled(true);
+				alert(conf, "Player " + p.getName() + " tried to use an " + pot
+						+ " potion" + ".");
+				alert(conf, p, "&cYou don't have permission to use that &6"
+						+ pot + " potion" + "&c.");
+			}
+			return;
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerDeath(PlayerDeathEvent e) {
 		WorldConfiguration conf = get(e.getEntity().getWorld().getName());
 		if (e.getEntity().hasPermission(this.p[4]) || conf.get(PDEATHEXP)) {
@@ -235,12 +261,11 @@ public class PrimaryListener extends Utility implements Listener {
 	public void onDispense(BlockDispenseEvent e) {
 		WorldConfiguration conf = get(e.getBlock().getWorld().getName());
 		if (conf.getBlockedDispense().contains(e.getItem().getType())) {
-			if (e.getBlock().getType() == Material.POTION) {
-				ItemStack is = e.getItem();
-				Potion b = ConfigHelper.fromDamage(is.getDurability());
-				if (conf.getDPotions().contains(b)) {
+			if (e.getItem().getType() == Material.POTION) {
+				Potion b = ConfigHelper.fromDamage(e.getItem().getDurability());
+				if (conf.getDPotions().contains(b.getNameId())) {
 					e.setCancelled(true);
-				}
+				} 
 				return;
 			}
 			e.setCancelled(true);
