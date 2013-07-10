@@ -30,23 +30,7 @@ public class EntityManager extends JavaPlugin {
 		handler.runCommand(s, l, a);
 		return true;
 	}
-
-	public void info(String info) {
-		this.getLogger().info(info);
-	}
-
-	public void warn(String warn) {
-		this.getLogger().warning(warn);
-	}
-
-	public void severe(String severe) {
-		this.getLogger().severe(severe);
-	}
-
-	public List<WorldConfiguration> getWorlds() {
-		return this.configs;
-	}
-
+	
 	public void load() {
 		configs = new ArrayList<WorldConfiguration>();
 		for (World w : Bukkit.getWorlds()) {
@@ -61,5 +45,9 @@ public class EntityManager extends JavaPlugin {
 			}
 		}
 		throw new NullPointerException();
+	}
+	
+	public List<WorldConfiguration> getWorlds() {
+		return this.configs;
 	}
 }
