@@ -96,7 +96,7 @@ public abstract class ConfigLoader {
 			out.flush();
 		} catch (Exception ex) {
 			plugin.getLogger().severe(
-					"Error: Writing default config generating an exception: "
+					"Writing default config generating an exception: "
 							+ ex.getMessage());
 		} finally {
 			try {
@@ -108,7 +108,7 @@ public abstract class ConfigLoader {
 				}
 			} catch (Exception ex) {
 				plugin.getLogger().severe(
-						"Error: Saving default config generating an exception: "
+						"Closing streams for config writes generating an exception: "
 								+ ex.getMessage());
 			}
 		}
