@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.milkycraft.em.config.ConfigHelper;
-import net.milkycraft.em.config.Option;
+import static net.milkycraft.em.config.Option.*;
 import net.milkycraft.em.config.WorldConfiguration;
 
 import org.bukkit.Material;
@@ -14,7 +14,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
-import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -37,6 +36,9 @@ import org.bukkit.potion.Potion;
 public class PrimaryListener extends Utility implements Listener {
 
 	private Set<Entity> mobs = new HashSet<Entity>();
+	private String[] p = { "entitymanager.interact.trade",
+			"entitymanager.interact.shoot", "entitymanager.interact.enchant",
+			"entitymanager.interact.anvil", "entitymanager.death.keepexp" };
 
 	public PrimaryListener(EntityManager manager) {
 		super(manager);
@@ -45,23 +47,20 @@ public class PrimaryListener extends Utility implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onInteraction(PlayerInteractEvent e) {
-		if (!e.hasItem()) {
+		if (!e.hasItem())
 			return;
-		}
-		WorldConfiguration conf = get(e.getPlayer().getWorld().getName());
-		Player player = e.getPlayer();
 		if (e.getAction() == Action.RIGHT_CLICK_AIR
 				|| e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			WorldConfiguration conf = get(e.getPlayer().getWorld().getName());
+			Player pl = e.getPlayer();
 			String perm = e.getItem().getType().toString().toLowerCase();
 			if (e.getItem().getType().equals(Material.FIREWORK)) {
-				if (conf.get(Option.FIREWORKS)
-						&& !player.hasPermission("entitymanager.interact."
-								+ perm)) {
-					e.setCancelled(true);
-					e.setUseItemInHand(Result.DENY);
-					alert(conf, "Player " + player.getName()
+				if (conf.get(FIREWORKS)
+						&& !pl.hasPermission("entitymanager.interact." + perm)) {
+					this.c(e);
+					alert(conf, "Player " + pl.getName()
 							+ " tried to use a firework.");
-					alert(conf, player,
+					alert(conf, pl,
 							"&cYou don't have permission to use fireworks.");
 
 				}
@@ -69,47 +68,45 @@ public class PrimaryListener extends Utility implements Listener {
 				EntityType type = EntityType
 						.fromId(e.getItem().getDurability());
 				if (conf.getBlockedEggs().contains(type)) {
-					if (!player.hasPermission("entitymanager.spawn."
+					if (!pl.hasPermission("entitymanager.spawn."
 							+ type.toString().toLowerCase())) {
 						String mob = type.toString().toLowerCase() + "s.";
-						e.setCancelled(true);
-						e.setUseItemInHand(Result.DENY);
-						alert(conf, "Player " + player.getName()
+						this.c(e);
+						alert(conf, "Player " + pl.getName()
 								+ " tried to spawn a " + mob.replace("s", ""));
-						alert(conf, player,
-								"&cYou don't have permission to spawn " + mob);
+						alert(conf, pl, "&cYou don't have permission to spawn "
+								+ mob);
 					}
 				}
 			} else if (conf.getBlockedUsage().contains(e.getItem().getType())) {
-				if(e.getItem().getType() == Material.POTION) {
+				if (e.getItem().getType() == Material.POTION) {
 					ItemStack is = e.getItem();
 					Potion b = ConfigHelper.fromDamage(is.getDurability());
 					if (conf.getPotions().contains(b)) {
-						String item = perm.replace("_", " ");
-						e.setCancelled(true);
-						e.setUseItemInHand(Result.DENY);
-						alert(conf, "Player " + player.getName()
-								+ " tried to use an " + item + ".");
-						alert(conf, player,
-								"&cYou don't have permission to use that &6" + item
+						this.c(e);
+						alert(conf, "Player " + pl.getName()
+								+ " tried to use an " + b.getType().name()
+								+ " potion" + ".");
+						alert(conf, pl,
+								"&cYou don't have permission to use that &6"
+										+ b.getType().name() + " potion"
 										+ "&c.");
 					}
 					return;
 				}
-				if (!player.hasPermission("entitymanager.interact." + perm)) {
+				if (!pl.hasPermission("entitymanager.interact." + perm)) {
 					String item = perm.replace("_", " ");
-					e.setCancelled(true);
-					e.setUseItemInHand(Result.DENY);
-					alert(conf, "Player " + player.getName()
-							+ " tried to use an " + item + ".");
-					alert(conf, player,
+					this.c(e);
+					alert(conf, "Player " + pl.getName() + " tried to use an "
+							+ item + ".");
+					alert(conf, pl,
 							"&cYou don't have permission to use that &6" + item
 									+ "&c.");
 				}
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPvp(EntityDamageByEntityEvent e) {
 		if (e.getEntity() instanceof Player) {
@@ -129,26 +126,15 @@ public class PrimaryListener extends Utility implements Listener {
 		}
 	}
 
-	private boolean a(WorldConfiguration conf, Player p, String name) {
-		if (conf.get(Option.PVP)
-				&& !p.hasPermission("entitymanager.interact.pvp")) {
-			alert(conf, "Player " + p.getName() + " tried to attack " + name);
-			alert(conf, p, "&cYou don't have permission to pvp.");
-			return true;
-		}
-		return false;
-	}
-
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onTrade(PlayerInteractEntityEvent e) {
 		if (e.getRightClicked() instanceof org.bukkit.entity.Villager) {
-			Player player = e.getPlayer();
-			WorldConfiguration conf = get(player.getWorld().getName());
-			if (conf.get(Option.THUNDER)
-					&& !player.hasPermission("entitymanager.interact.trade")) {
+			Player pl = e.getPlayer();
+			WorldConfiguration conf = get(pl.getWorld().getName());
+			if (conf.get(THUNDER) && !pl.hasPermission(p[0])) {
 				e.setCancelled(true);
-				alert(conf, "Player " + player.getName() + " tried to trade ");
-				alert(conf, player, "&cYou don't have permission to trade.");
+				alert(conf, "Player " + pl.getName() + " tried to trade ");
+				alert(conf, pl, "&cYou don't have permission to trade.");
 			}
 		}
 	}
@@ -158,8 +144,7 @@ public class PrimaryListener extends Utility implements Listener {
 		if (e.getEntity() instanceof Player) {
 			Player player = ((Player) e.getEntity());
 			WorldConfiguration conf = get(player.getWorld().getName());
-			if (conf.get(Option.SHOOTING)
-					&& !player.hasPermission("entitymanager.interact.shoot")) {
+			if (conf.get(SHOOTING) && !player.hasPermission(p[1])) {
 				e.setCancelled(true);
 				alert(conf, "Player " + player.getName()
 						+ " attempted to shoot a bow.");
@@ -173,8 +158,7 @@ public class PrimaryListener extends Utility implements Listener {
 	public void onEnchant(EnchantItemEvent e) {
 		Player player = e.getEnchanter();
 		WorldConfiguration conf = get(player.getWorld().getName());
-		if (conf.get(Option.ENCHANTING)
-				&& !player.hasPermission("entitymanager.interact.enchant")) {
+		if (conf.get(ENCHANTING) && !player.hasPermission(p[2])) {
 			e.setCancelled(true);
 			alert(conf, "Player " + player.getName() + " tried to enchant a "
 					+ e.getItem().getType().toString().toLowerCase());
@@ -189,8 +173,7 @@ public class PrimaryListener extends Utility implements Listener {
 				if (e.getWhoClicked() instanceof Player) {
 					Player p = (Player) e.getWhoClicked();
 					WorldConfiguration conf = get(p.getWorld().getName());
-					if (conf.get(Option.ENCHANTING)
-							&& !p.hasPermission("entitymanager.interact.anvil")) {
+					if (conf.get(ENCHANTING) && !p.hasPermission(this.p[3])) {
 						e.setCancelled(true);
 						alert(conf, "Player "
 								+ p.getName()
@@ -220,33 +203,29 @@ public class PrimaryListener extends Utility implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onDeath(EntityDeathEvent e) {
-		Entity ent = e.getEntity();
-		if (ent instanceof Creature) {
-			WorldConfiguration conf = get(ent.getWorld().getName());
-			if (mobs.contains(ent)) {
-				if (conf.get(Option.NOEXP)) {
+		if (e.getEntity() instanceof Creature) {
+			WorldConfiguration conf = get(e.getEntity().getWorld().getName());
+			if (mobs.contains(e.getEntity())) {
+				if (conf.get(NOEXP)) {
 					e.setDroppedExp(0);
-				} else if (conf.get(Option.NODROPS)) {
+				} else if (conf.get(NODROPS)) {
 					e.getDrops().clear();
 				}
-				mobs.remove(ent);
+				mobs.remove(e.getEntity());
 			}
-			if (!conf.get(Option.EDEATHEXP)) {
+			if (!conf.get(EDEATHEXP)) {
 				e.setDroppedExp(0);
 			}
-			if (!conf.get(Option.EDEATHDROPS)) {
+			if (!conf.get(EDEATHDROPS)) {
 				e.getDrops().clear();
 			}
 		}
 	}
-	
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerDeath(PlayerDeathEvent e) {
-		Player p = e.getEntity();
-		WorldConfiguration conf = get(p.getWorld().getName());
-		if ((p.hasPermission("entitymanager.death.keepexp") && !p.isOp())
-				|| conf.get(Option.PDEATHEXP)) {
+		WorldConfiguration conf = get(e.getEntity().getWorld().getName());
+		if (e.getEntity().hasPermission(this.p[4]) || conf.get(PDEATHEXP)) {
 			e.setKeepLevel(true);
 			e.setDroppedExp(0);
 		}
@@ -256,7 +235,7 @@ public class PrimaryListener extends Utility implements Listener {
 	public void onDispense(BlockDispenseEvent e) {
 		WorldConfiguration conf = get(e.getBlock().getWorld().getName());
 		if (conf.getBlockedDispense().contains(e.getItem().getType())) {
-			if(e.getBlock().getType() == Material.POTION) {
+			if (e.getBlock().getType() == Material.POTION) {
 				ItemStack is = e.getItem();
 				Potion b = ConfigHelper.fromDamage(is.getDurability());
 				if (conf.getDPotions().contains(b)) {
@@ -264,7 +243,7 @@ public class PrimaryListener extends Utility implements Listener {
 				}
 				return;
 			}
-			e.setCancelled(true); 
+			e.setCancelled(true);
 			return;
 		}
 	}
