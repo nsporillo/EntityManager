@@ -77,6 +77,7 @@ public abstract class ConfigLoader {
 	protected void saveIfNotExist() {
 		if (!configFile.exists()) {
 			if (plugin.getResource(fileName) != null) {
+				plugin.getLogger().info("Saving " + fileName + " to disk");
 				plugin.saveResource(fileName, false);
 			}
 		}
