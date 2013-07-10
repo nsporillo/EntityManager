@@ -164,7 +164,9 @@ public class WorldConfiguration extends ConfigLoader {
 			super.set("Disable.Usage.Blocked_Items", list);
 			lg.info("Successfully updated " + fileName + " to 1.4");
 		} else if (revision.equals("1.4")) {
-			// Don't reload if config is up to date, #optimization
+			/*TODO: Add new config options*/
+			return;
+		} else if (revision.equals("1.5")) {			
 			return;
 		} else {
 			lg.warning("Could not update config, mismatched config revision: Local: "
