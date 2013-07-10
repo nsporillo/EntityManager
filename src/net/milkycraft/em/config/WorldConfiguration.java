@@ -25,8 +25,8 @@ public class WorldConfiguration extends ConfigLoader {
 	private Set<EntityType> disEggs = new HashSet<EntityType>();
 	private Set<EntityType> disMobs = new HashSet<EntityType>();
 	private Set<SpawnReason> disReasons = new HashSet<SpawnReason>();
-	private Set<Potion> dispots = new HashSet<Potion>();
-	private Set<Potion> disDpots = new HashSet<Potion>();
+	private Set<Integer> dispots = new HashSet<Integer>();
+	private Set<Integer> disDpots = new HashSet<Integer>();
 
 	public WorldConfiguration(EntityManager plugin, String world) {
 		super(plugin, world + ".yml");
@@ -72,7 +72,7 @@ public class WorldConfiguration extends ConfigLoader {
 					String[] args = s.split(":");
 					Integer id = Integer.parseInt(args[1]);
 					Potion p = ConfigHelper.fromDamage(id);
-					this.dispots.add(p);
+					this.dispots.add(p.getNameId());
 					if (!usageBlock.contains(Material.POTION)) {
 						usageBlock.add(Material.POTION);
 					}
@@ -91,7 +91,7 @@ public class WorldConfiguration extends ConfigLoader {
 					String[] args = s.split(":");
 					Integer id = Integer.parseInt(args[1]);
 					Potion p = ConfigHelper.fromDamage(id);
-					this.disDpots.add(p);
+					this.disDpots.add(p.getNameId());
 					if (!disBlock.contains(Material.POTION)) {
 						disBlock.add(Material.POTION);
 					}
@@ -160,8 +160,8 @@ public class WorldConfiguration extends ConfigLoader {
 			super.set("Usage.Potions", null);
 			super.set("Usage.Splash_Potions", null);
 			List<String> list = config.getStringList("Usage.Blocked_Items");
-			list.add("'Potion:16384'");
-			super.set("Usage.Blocked_Items", list);
+			list.add("Potion:16394");
+			super.set("Disable.Usage.Blocked_Items", list);
 			lg.info("Successfully updated " + fileName + " to 1.4");
 		} else if (revision.equals("1.4")) {
 			// Don't reload if config is up to date, #optimization
@@ -207,11 +207,11 @@ public class WorldConfiguration extends ConfigLoader {
 		return this.disReasons;
 	}
 
-	public Set<Potion> getPotions() {
+	public Set<Integer> getPotions() {
 		return this.dispots;
 	}
 
-	public Set<Potion> getDPotions() {
+	public Set<Integer> getDPotions() {
 		return this.disDpots;
 	}
 
