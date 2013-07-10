@@ -76,8 +76,9 @@ public class WorldConfiguration extends ConfigLoader {
 					this.dispots.add(p);
 					usageBlock.add(Material.POTION);
 				} else {
-					em.severe("Found invalid material in usage items: " + s);
-					em.severe("Reference: http://goo.gl/f1Nmb");
+					em.getLogger().severe(
+							"Found invalid material in usage items: " + s);
+					em.getLogger().severe("Reference: http://goo.gl/f1Nmb");
 				}
 			}
 		}
@@ -93,8 +94,9 @@ public class WorldConfiguration extends ConfigLoader {
 					this.disDpots.add(p);
 					disBlock.add(Material.POTION);
 				} else {
-					em.severe("Found invalid material in dispense items: " + s);
-					em.severe("Reference: http://goo.gl/f1Nmb");
+					em.getLogger().severe(
+							"Found invalid material in dispense items: " + s);
+					em.getLogger().severe("Reference: http://goo.gl/f1Nmb");
 				}
 			}
 		}
@@ -102,24 +104,27 @@ public class WorldConfiguration extends ConfigLoader {
 			try {
 				disEggs.add(EntityType.valueOf(s.toUpperCase()));
 			} catch (Exception ex) {
-				em.severe("Found invalid entitytype in blocked eggs");
-				em.severe("Reference: http://goo.gl/E7mVB");
+				em.getLogger().severe(
+						"Found invalid entitytype in blocked eggs");
+				em.getLogger().severe("Reference: http://goo.gl/E7mVB");
 			}
 		}
 		for (String s : config.getStringList("SpawnManager.Disallowed_Mobs")) {
 			try {
 				disMobs.add(EntityType.valueOf(s.toUpperCase()));
 			} catch (Exception ex) {
-				em.severe("Found invalid entitytype in blocked mobs");
-				em.severe("Reference: http://goo.gl/E7mVB");
+				em.getLogger().severe(
+						"Found invalid entitytype in blocked mobs");
+				em.getLogger().severe("Reference: http://goo.gl/E7mVB");
 			}
 		}
 		for (String s : config.getStringList("SpawnManager.Disallowed_Reasons")) {
 			try {
 				disReasons.add(SpawnReason.valueOf(s.toUpperCase()));
 			} catch (Exception ex) {
-				em.severe("Found invalid spawnreason in blocked spawn reasons");
-				em.severe("Reference: http://goo.gl/a4XRB");
+				em.getLogger().severe(
+						"Found invalid spawnreason in blocked spawn reasons");
+				em.getLogger().severe("Reference: http://goo.gl/a4XRB");
 			}
 		}
 	}
@@ -133,24 +138,28 @@ public class WorldConfiguration extends ConfigLoader {
 			super.set("Disable.Usage.Potions", false);
 			super.set("Disable.Usage.Splash_Potions", false);
 			super.set("Disable.Interaction.Trading", false);
-			plugin.info("Successfully updated " + fileName + " to 1.0");
+			plugin.getLogger().info(
+					"Successfully updated " + fileName + " to 1.0");
 		} else if (revision.equals("1.0")) {
 			super.set("Settings.Config_Revision", this.localRev);
 			List<String> list = new ArrayList<String>();
 			list.add(SpawnReason.LIGHTNING.toString().toLowerCase());
 			super.set("SpawnManager.Disallowed_Reasons", list);
-			plugin.info("Successfully updated " + fileName + " to 1.1");
+			plugin.getLogger().info(
+					"Successfully updated " + fileName + " to 1.1");
 		} else if (revision.equals("1.1")) {
 			super.set("Settings.Config_Revision", this.localRev);
 			super.set("DeathManager.Keep_Exp", false);
-			plugin.info("Successfully updated " + fileName + " to 1.2");
+			plugin.getLogger().info(
+					"Successfully updated " + fileName + " to 1.2");
 		} else if (revision.equals("1.2")) {
 			super.set("Settings.Config_Revision", this.localRev);
 			super.set("DeathManager.Keep_Exp", null);
 			super.set("DeathManager.Player.Keep_Exp", false);
 			super.set("DeathManager.Entity.Drop_Exp", true);
 			super.set("DeathManager.Entity.Drop_Items", true);
-			plugin.info("Successfully updated " + fileName + " to 1.3");
+			plugin.getLogger().info(
+					"Successfully updated " + fileName + " to 1.3");
 		} else if (revision.equals("1.3")) {
 			super.set("Settings.Config_Revision", this.localRev);
 			super.set("Usage.Potions", null);
@@ -158,10 +167,11 @@ public class WorldConfiguration extends ConfigLoader {
 			List<String> list = config.getStringList("Usage.Blocked_Items");
 			list.add("'Potion:16384'");
 			super.set("Usage.Blocked_Items", list);
-			plugin.info("Successfully updated " + fileName + " to 1.4");
+			plugin.getLogger().info(
+					"Successfully updated " + fileName + " to 1.4");
 		} else {
-			super.plugin
-					.warn("Could not update config, mismatched config revision: Local: "
+			plugin.getLogger().warning(
+					"Could not update config, mismatched config revision: Local: "
 							+ this.localRev + " File: " + revision);
 		}
 		this.reload();
@@ -190,15 +200,15 @@ public class WorldConfiguration extends ConfigLoader {
 	public Set<SpawnReason> getBlockedReasons() {
 		return this.disReasons;
 	}
-	
+
 	public Set<Potion> getPotions() {
 		return this.dispots;
 	}
-	
+
 	public Set<Potion> getDPotions() {
 		return this.disDpots;
 	}
- 
+
 	public void reload() {
 		this.disBlock.clear();
 		this.disEggs.clear();
