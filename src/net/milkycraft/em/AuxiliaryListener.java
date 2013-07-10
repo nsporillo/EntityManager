@@ -1,11 +1,12 @@
 package net.milkycraft.em;
 
 import static net.milkycraft.em.config.Option.FISHING;
+import static net.milkycraft.em.config.Option.LIGHTNING;
 import static net.milkycraft.em.config.Option.RAIN;
 import static net.milkycraft.em.config.Option.THUNDER;
-import static net.milkycraft.em.config.Option.LIGHTNING;
-import static org.bukkit.entity.EntityType.EGG;
-import static org.bukkit.entity.EntityType.ENDER_PEARL;
+import static org.bukkit.Material.EXP_BOTTLE;
+import static org.bukkit.Material.POTION;
+import static org.bukkit.Material.SNOW_BALL;
 import static org.bukkit.entity.EntityType.FISHING_HOOK;
 import static org.bukkit.entity.EntityType.SNOWBALL;
 import static org.bukkit.entity.EntityType.SPLASH_POTION;
@@ -15,6 +16,7 @@ import net.milkycraft.em.config.WorldConfiguration;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -32,7 +34,6 @@ public class AuxiliaryListener extends Utility implements Listener {
 		super(manager);
 		super.register(this);
 	}
-	
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onLightning(LightningStrikeEvent e) {
@@ -41,8 +42,8 @@ public class AuxiliaryListener extends Utility implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onThunderChange(ThunderChangeEvent e) {
-		boolean cancel = e.toThunderState() ? get(e.getWorld().getName())
-				.get(THUNDER) : false;
+		boolean cancel = e.toThunderState() ? get(e.getWorld().getName()).get(
+				THUNDER) : false;
 		e.setCancelled(cancel);
 	}
 
@@ -61,7 +62,7 @@ public class AuxiliaryListener extends Utility implements Listener {
 		WorldConfiguration conf = get(e.getEntity().getWorld().getName());
 		Player player = (Player) e.getEntity().getShooter();
 		Entity en = e.getEntity();
-		if (en.getType() == EGG) {
+		if (en.getType() == EntityType.EGG) {
 			if (conf.getBlockedUsage().contains(Material.EGG)) {
 				if (!player.hasPermission("entitymanager.interact.egg")) {
 					e.setCancelled(true);
@@ -72,7 +73,7 @@ public class AuxiliaryListener extends Utility implements Listener {
 				}
 			}
 		} else if (en.getType() == SNOWBALL) {
-			if (conf.getBlockedUsage().contains(Material.SNOW_BALL)) {
+			if (conf.getBlockedUsage().contains(SNOW_BALL)) {
 				if (!player.hasPermission("entitymanager.interact.snow_ball")) {
 					e.setCancelled(true);
 					alert(conf, "Player " + player.getName()
@@ -82,7 +83,7 @@ public class AuxiliaryListener extends Utility implements Listener {
 				}
 			}
 		} else if (en.getType() == THROWN_EXP_BOTTLE) {
-			if (conf.getBlockedUsage().contains(Material.EXP_BOTTLE)) {
+			if (conf.getBlockedUsage().contains(EXP_BOTTLE)) {
 				if (!player.hasPermission("entitymanager.interact.exp_bottle")) {
 					e.setCancelled(true);
 					alert(conf, "Player " + player.getName()
@@ -91,7 +92,7 @@ public class AuxiliaryListener extends Utility implements Listener {
 							"&cYou don't have permission to throw exp bottles.");
 				}
 			}
-		} else if (en.getType() == ENDER_PEARL) {
+		} else if (en.getType() == EntityType.ENDER_PEARL) {
 			if (conf.getBlockedUsage().contains(Material.ENDER_PEARL)) {
 				if (!player.hasPermission("entitymanager.interact.ender_pearl")) {
 					e.setCancelled(true);
@@ -103,7 +104,7 @@ public class AuxiliaryListener extends Utility implements Listener {
 				}
 			}
 		} else if (en.getType() == SPLASH_POTION) {
-			if (conf.getBlockedUsage().contains(Material.POTION)) {
+			if (conf.getBlockedUsage().contains(POTION)) {
 				ItemStack is = player.getItemInHand();
 				Potion b = ConfigHelper.fromDamage(is.getDurability());
 				if (conf.getPotions().contains(b)) {
