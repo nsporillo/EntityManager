@@ -1,11 +1,5 @@
 package net.milkycraft.em.config;
 
-/**
- * Enumerated Config values
- * 
- * @author milky
- * 
- */
 public enum Option {
 
 	ADMIN_ALERTS(0), 
