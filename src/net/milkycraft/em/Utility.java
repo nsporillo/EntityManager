@@ -1,21 +1,20 @@
 package net.milkycraft.em;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-
-import static org.bukkit.ChatColor.*;
-
-import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
-import org.bukkit.event.Event.Result;
-import org.bukkit.event.player.PlayerInteractEvent;
-
+import static org.bukkit.ChatColor.translateAlternateColorCodes;
 import net.milkycraft.em.config.Option;
 import net.milkycraft.em.config.WorldConfiguration;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
+import org.bukkit.potion.Potion;
 
 public abstract class Utility {
 
 	private EntityManager manager;
+	private int[] ids = { 23, 54, 61, 62, 69, 77, 84, 116, 117, 130, 138, 143,145 };
 
 	public Utility(EntityManager manager) {
 		this.manager = manager;
@@ -28,51 +27,65 @@ public abstract class Utility {
 	public boolean a(WorldConfiguration conf, Player p, String name) {
 		if (conf.get(Option.PVP)
 				&& !p.hasPermission("entitymanager.interact.pvp")) {
-			alert(conf, "Player " + p.getName() + " tried to attack " + name);
-			alert(conf, p, "&cYou don't have permission to pvp.");
+			al(conf, "Player " + p.getName() + " tried to attack " + name);
+			al(conf, p, "&cYou don't have permission to pvp.");
 			return true;
 		}
 		return false;
 	}
-	
-	public void c(PlayerInteractEvent e) {
-		e.setCancelled(true);
-		e.setUseItemInHand(Result.DENY);
+
+	public boolean b(Block b) {
+		if(b == null){
+			return false;
+		}
+		for (int i : ids) {
+			if (b.getTypeId() == i) {
+				return true;
+			}
+		}
+		return false;
 	}
 
-	public void alert(WorldConfiguration conf, String adminMsg) {
+	public String c(Potion p) {
+		return p.getType().name().toLowerCase()
+				+ (p.getLevel() == 1 ? "" : " II")
+				+ (p.isSplash() ? " splash" : "");
+	}
+
+	public void al(WorldConfiguration conf, String adminMsg) {
 		if (conf.get(Option.ADMIN_ALERTS)) {
-			adminAlert(adminMsg, conf.getWorld());
+			adA(adminMsg, conf.getWorld());
 		}
 		if (conf.get(Option.LOGGING)) {
 			manager.getLogger().info(adminMsg);
 		}
 	}
 
-	public static void alert(WorldConfiguration conf, Player player, String message) {
+	public static void al(WorldConfiguration conf, Player player, String message) {
 		if (conf.get(Option.PLAYER_ALERTS)) {
 			player.sendMessage(translateAlternateColorCodes('&', message));
 		}
 	}
 
-	private static void adminAlert(String message, String world) {
-		String msg =  "&2[&4Alert&2] [&6" + world + "&2] &c"+ message;
-		for(Player p : Bukkit.getOnlinePlayers()) {
-			if(p.hasPermission("entitymanager.admin.alert")) {
+	private static void adA(String message, String world) {
+		String msg = "&2[&4Alert&2] [&6" + world + "&2] &c" + message;
+		for (Player p : Bukkit.getOnlinePlayers()) {
+			if (p.hasPermission("entitymanager.admin.alert")) {
 				p.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
 			}
 		}
 	}
-	
+
 	public EntityManager getHandle() {
 		return this.manager;
 	}
-	
+
 	public WorldConfiguration get(String world) {
 		try {
 			return manager.getWorld(world);
 		} catch (NullPointerException ex) {
-			manager.getLogger().warning("No config found for " + world + ", generating one now");
+			manager.getLogger().warning(
+					"No config found for " + world + ", generating one now");
 			manager.load();
 			return manager.getWorld(world);
 		}
