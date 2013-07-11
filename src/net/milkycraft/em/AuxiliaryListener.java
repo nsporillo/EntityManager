@@ -60,70 +60,67 @@ public class AuxiliaryListener extends Utility implements Listener {
 			return;
 		}
 		WorldConfiguration conf = get(e.getEntity().getWorld().getName());
-		Player player = (Player) e.getEntity().getShooter();
+		Player p = (Player) e.getEntity().getShooter();
 		Entity en = e.getEntity();
 		if (en.getType() == EntityType.EGG) {
 			if (conf.getBlockedUsage().contains(Material.EGG)) {
-				if (!player.hasPermission("entitymanager.interact.egg")) {
+				if (!p.hasPermission("entitymanager.interact.egg")) {
 					e.setCancelled(true);
-					alert(conf, "Player " + player.getName()
-							+ " tried to throw a egg");
-					alert(conf, player,
-							"&cYou don't have permission to throw eggs.");
+					al(conf, "Player " + p.getName() + " tried to throw a egg");
+					al(conf, p, "&cYou don't have permission to throw eggs.");
 				}
 			}
 		} else if (en.getType() == SNOWBALL) {
 			if (conf.getBlockedUsage().contains(SNOW_BALL)) {
-				if (!player.hasPermission("entitymanager.interact.snow_ball")) {
+				if (!p.hasPermission("entitymanager.interact.snow_ball")) {
 					e.setCancelled(true);
-					alert(conf, "Player " + player.getName()
+					al(conf, "Player " + p.getName()
 							+ " tried to throw a snowball");
-					alert(conf, player,
+					al(conf, p,
 							"&cYou don't have permission to throw snowballs.");
 				}
 			}
 		} else if (en.getType() == THROWN_EXP_BOTTLE) {
 			if (conf.getBlockedUsage().contains(EXP_BOTTLE)) {
-				if (!player.hasPermission("entitymanager.interact.exp_bottle")) {
+				if (!p.hasPermission("entitymanager.interact.exp_bottle")) {
 					e.setCancelled(true);
-					alert(conf, "Player " + player.getName()
+					al(conf, "Player " + p.getName()
 							+ " tried to use an exp bottle.");
-					alert(conf, player,
+					al(conf, p,
 							"&cYou don't have permission to throw exp bottles.");
 				}
 			}
 		} else if (en.getType() == EntityType.ENDER_PEARL) {
 			if (conf.getBlockedUsage().contains(Material.ENDER_PEARL)) {
-				if (!player.hasPermission("entitymanager.interact.ender_pearl")) {
+				if (!p.hasPermission("entitymanager.interact.ender_pearl")) {
 					e.setCancelled(true);
-					alert(conf, "Player " + player.getName()
+					al(conf, "Player " + p.getName()
 							+ " tried to use an ender pearl");
-					alert(conf, player,
+					al(conf, p,
 							"&cYou don't have permission to throw ender pearls.");
 
 				}
 			}
 		} else if (en.getType() == SPLASH_POTION) {
 			if (conf.getBlockedUsage().contains(POTION)) {
-				ItemStack is = player.getItemInHand();
+				ItemStack is = p.getItemInHand();
 				Potion b = ConfigHelper.fromDamage(is.getDurability());
 				if (conf.getPotions().contains(b)) {
-					if (!player
-							.hasPermission("entitymanager.interact.splash_potion")) {
+					if (!p.hasPermission("entitymanager.interact.splash_potion")) {
 						e.setCancelled(true);
-						alert(conf, "Player " + player.getName()
+						al(conf, "Player " + p.getName()
 								+ " tried to throw a splash potion");
-						alert(conf, player,
+						al(conf, p,
 								"&cYou don't have permission to throw potions.");
 					}
 				}
 			}
 		} else if (en.getType() == FISHING_HOOK) {
 			if (conf.get(FISHING)
-					&& !player.hasPermission("entitymanager.interact.fishing")) {
+					&& !p.hasPermission("entitymanager.interact.fishing")) {
 				e.setCancelled(true);
-				alert(conf, "Player " + player.getName() + " tried to fish");
-				alert(conf, player, "&cYou don't have permission to fish.");
+				al(conf, "Player " + p.getName() + " tried to fish");
+				al(conf, p, "&cYou don't have permission to fish.");
 			}
 		}
 	}
