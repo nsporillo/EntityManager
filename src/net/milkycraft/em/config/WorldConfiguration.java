@@ -59,11 +59,14 @@ public class WorldConfiguration extends ConfigLoader {
 		b[17] = config.getBoolean("DeathManager.Entity.Drop_Items", true);
 		l[0] = config.getLong("TimeManager.Target_Time", 12000L);
 		l[1] = config.getLong("TimeManager.Set_Every", 100L);
-		loadLists();
+		if(loadLists()) {
+			plugin.getLogger().severe("Configuration has invalid values in the lists, please fix them");
+		}
 	}
 
-	private void loadLists() {
+	private boolean loadLists() {
 		final EntityManager em = super.plugin;
+		boolean error = false;
 		for (String s : config.getStringList("Disable.Usage.Blocked_Items")) {
 			try {
 				usageBlock.add(Material.valueOf(s.toUpperCase()));
@@ -77,6 +80,7 @@ public class WorldConfiguration extends ConfigLoader {
 						usageBlock.add(Material.POTION);
 					}
 				} else {
+					error = true;
 					em.getLogger().severe("Invalid value: " + s);
 					em.getLogger().severe("Reference: http://goo.gl/f1Nmb");
 				}
@@ -96,6 +100,7 @@ public class WorldConfiguration extends ConfigLoader {
 						disBlock.add(Material.POTION);
 					}
 				} else {
+					error = true;
 					em.getLogger().severe("Invalid value: " + s);
 					em.getLogger().severe("Reference: http://goo.gl/f1Nmb");
 				}
@@ -105,6 +110,7 @@ public class WorldConfiguration extends ConfigLoader {
 			try {
 				disEggs.add(EntityType.valueOf(s.toUpperCase()));
 			} catch (Exception ex) {
+				error = true;
 				em.getLogger().severe("Invalid value: " + s);
 				em.getLogger().severe("Reference: http://goo.gl/E7mVB");
 			}
@@ -113,6 +119,7 @@ public class WorldConfiguration extends ConfigLoader {
 			try {
 				disMobs.add(EntityType.valueOf(s.toUpperCase()));
 			} catch (Exception ex) {
+				error = true;
 				em.getLogger().severe("Invalid value: " + s);
 				em.getLogger().severe("Reference: http://goo.gl/E7mVB");
 			}
@@ -121,10 +128,12 @@ public class WorldConfiguration extends ConfigLoader {
 			try {
 				disReasons.add(SpawnReason.valueOf(s.toUpperCase()));
 			} catch (Exception ex) {
+				error = true;
 				em.getLogger().severe("Invalid value: " + s);
 				em.getLogger().severe("Reference: http://goo.gl/a4XRB");
 			}
 		}
+		return error;
 	}
 
 	public void performUpdate(String revision) {
