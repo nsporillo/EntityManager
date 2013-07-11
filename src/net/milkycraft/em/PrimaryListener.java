@@ -1,10 +1,12 @@
 package net.milkycraft.em;
 
+import static net.milkycraft.em.config.Option.*;
+import static org.bukkit.event.block.Action.*;
+
 import java.util.HashSet;
 import java.util.Set;
 
 import net.milkycraft.em.config.ConfigHelper;
-import static net.milkycraft.em.config.Option.*;
 import net.milkycraft.em.config.WorldConfiguration;
 
 import org.bukkit.Material;
@@ -12,16 +14,12 @@ import org.bukkit.entity.Creature;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-
-import static org.bukkit.event.block.Action.*;
-
-import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -53,19 +51,25 @@ public class PrimaryListener extends Utility implements Listener {
 	public void onInteraction(PlayerInteractEvent e) {
 		if (!e.hasItem())
 			return;
-		if (e.getAction() == RIGHT_CLICK_AIR || e.getAction() == RIGHT_CLICK_BLOCK) {
+		if (e.getAction() == RIGHT_CLICK_AIR
+				|| e.getAction() == RIGHT_CLICK_BLOCK) {
 			WorldConfiguration c = get(e.getPlayer().getWorld().getName());
 			Player pl = e.getPlayer();
 			String perm = e.getItem().getType().toString().toLowerCase();
 			if (e.getItem().getType().equals(Material.FIREWORK)) {
 				if (c.get(FIREWORKS)
 						&& !pl.hasPermission("entitymanager.interact." + perm)) {
-					this.c(e);
-					alert(c, "Player " + pl.getName()
-							+ " tried to use a firework.");
-					alert(c, pl,
-							"&cYou don't have permission to use fireworks.");
-
+					if (b(e.getClickedBlock())) {
+						e.setUseItemInHand(Result.DENY);
+						return;
+					} else {
+						e.setUseItemInHand(Result.DENY);
+						e.setCancelled(true);
+						al(c, "Player " + pl.getName()
+								+ " tried to use a firework.");
+						al(c, pl,
+								"&cYou don't have permission to use fireworks.");
+					}
 				}
 			} else if (e.getItem().getType().equals(Material.MONSTER_EGG)) {
 				EntityType type = EntityType
@@ -73,12 +77,18 @@ public class PrimaryListener extends Utility implements Listener {
 				if (c.getBlockedEggs().contains(type)) {
 					if (!pl.hasPermission("entitymanager.spawn."
 							+ type.toString().toLowerCase())) {
-						String mob = type.toString().toLowerCase() + "s.";
-						this.c(e);
-						alert(c, "Player " + pl.getName()
-								+ " tried to spawn a " + mob.replace("s", ""));
-						alert(c, pl, "&cYou don't have permission to spawn "
-								+ mob);
+						String mob = type.toString().toLowerCase();
+						if (b(e.getClickedBlock())) {
+							e.setUseItemInHand(Result.DENY);
+							return;
+						} else {
+							e.setUseItemInHand(Result.DENY);
+							e.setCancelled(true);
+							al(c, "Player " + pl.getName()
+									+ " tried to spawn a " + mob);
+							al(c, pl, "&cYou don't have permission to spawn "
+									+ mob + "s.");
+						}
 					}
 				}
 			} else if (c.getBlockedUsage().contains(e.getItem().getType())) {
@@ -90,23 +100,35 @@ public class PrimaryListener extends Utility implements Listener {
 						return;
 					}
 					if (c.getPotions().contains(b.getNameId())) {
-						String pot = b.getType().name().toLowerCase();
-						this.c(e);
-						alert(c, "Player " + pl.getName() + " tried to use an "
-								+ pot + " potion" + ".");
-						alert(c, pl,
-								"&cYou don't have permission to use that &6"
-										+ pot + " potion" + "&c.");
+						if (b(e.getClickedBlock())) {
+							e.setUseItemInHand(Result.DENY);
+							return;
+						} else {
+							e.setUseItemInHand(Result.DENY);
+							e.setCancelled(true);
+							al(c, "Player " + pl.getName()
+									+ " tried to use an " + c(b) + " potion"
+									+ ".");
+							al(c, pl,
+									"&cYou don't have permission to use that &6"
+											+ c(b) + " potion" + "&c.");
+						}
 					}
 					return;
 				}
 				if (!pl.hasPermission("entitymanager.interact." + perm)) {
 					String item = perm.replace("_", " ");
-					this.c(e);
-					alert(c, "Player " + pl.getName() + " tried to use an "
-							+ item + ".");
-					alert(c, pl, "&cYou don't have permission to use that &6"
-							+ item + "&c.");
+					if (b(e.getClickedBlock())) {
+						e.setUseItemInHand(Result.DENY);
+						return;
+					} else {
+						e.setUseItemInHand(Result.DENY);
+						e.setCancelled(true);
+						al(c, "Player " + pl.getName() + " tried to use an "
+								+ item + ".");
+						al(c, pl, "&cYou don't have permission to use that &6"
+								+ item + "&c.");
+					}
 				}
 			}
 		}
@@ -138,8 +160,8 @@ public class PrimaryListener extends Utility implements Listener {
 			WorldConfiguration conf = get(pl.getWorld().getName());
 			if (conf.get(TRADING) && !pl.hasPermission(p[0])) {
 				e.setCancelled(true);
-				alert(conf, "Player " + pl.getName() + " tried to trade ");
-				alert(conf, pl, "&cYou don't have permission to trade.");
+				al(conf, "Player " + pl.getName() + " tried to trade ");
+				al(conf, pl, "&cYou don't have permission to trade.");
 			}
 		}
 	}
@@ -151,10 +173,9 @@ public class PrimaryListener extends Utility implements Listener {
 			WorldConfiguration conf = get(player.getWorld().getName());
 			if (conf.get(SHOOTING) && !player.hasPermission(p[1])) {
 				e.setCancelled(true);
-				alert(conf, "Player " + player.getName()
-						+ " attempted to shoot a bow.");
-				alert(conf, player,
-						"&cYou don't have permission to shoot bows.");
+				al(conf, "Player " + player.getName()
+						+ " tried to shoot a bow.");
+				al(conf, player, "&cYou don't have permission to shoot bows.");
 			}
 		}
 	}
@@ -165,9 +186,9 @@ public class PrimaryListener extends Utility implements Listener {
 		WorldConfiguration conf = get(player.getWorld().getName());
 		if (conf.get(ENCHANTING) && !player.hasPermission(p[2])) {
 			e.setCancelled(true);
-			alert(conf, "Player " + player.getName() + " tried to enchant a "
+			al(conf, "Player " + player.getName() + " tried to enchant a "
 					+ e.getItem().getType().toString().toLowerCase());
-			alert(conf, player, "&cYou don't have permission to enchant.");
+			al(conf, player, "&cYou don't have permission to enchant.");
 		}
 	}
 
@@ -180,12 +201,12 @@ public class PrimaryListener extends Utility implements Listener {
 					WorldConfiguration conf = get(p.getWorld().getName());
 					if (conf.get(ENCHANTING) && !p.hasPermission(this.p[3])) {
 						e.setCancelled(true);
-						alert(conf, "Player "
+						al(conf, "Player "
 								+ p.getName()
 								+ " tried to enchant a "
 								+ e.getCurrentItem().getType().toString()
 										.toLowerCase() + " in an anvil.");
-						alert(conf, p,
+						al(conf, p,
 								"&cYou don't have permission to use anvils.");
 					}
 				}
@@ -209,8 +230,6 @@ public class PrimaryListener extends Utility implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onDeath(EntityDeathEvent e) {
 		if (e.getEntity() instanceof Creature) {
-			Horse h = (Horse) e.getEntity();
-			h.getInventory().getSaddle();
 			WorldConfiguration conf = get(e.getEntity().getWorld().getName());
 			if (mobs.contains(e.getEntity())) {
 				if (conf.get(NOEXP)) {
@@ -241,12 +260,11 @@ public class PrimaryListener extends Utility implements Listener {
 				return;
 			}
 			if (conf.getPotions().contains(b.getNameId())) {
-				String pot = b.getType().name().toLowerCase();
 				e.setCancelled(true);
-				alert(conf, "Player " + p.getName() + " tried to use an " + pot
+				al(conf, "Player " + p.getName() + " tried to use an " + c(b)
 						+ " potion" + ".");
-				alert(conf, p, "&cYou don't have permission to use that &6"
-						+ pot + " potion" + "&c.");
+				al(conf, p, "&cYou don't have permission to use that &6" + c(b)
+						+ " potion" + "&c.");
 			}
 			return;
 		}
