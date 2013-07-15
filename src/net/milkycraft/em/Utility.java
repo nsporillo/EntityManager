@@ -6,10 +6,12 @@ import net.milkycraft.em.config.WorldConfiguration;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionType;
 
 public abstract class Utility {
 
@@ -33,6 +35,10 @@ public abstract class Utility {
 		}
 		return false;
 	}
+	
+	public WorldConfiguration a(World w) {
+		return this.get(w.getName());
+	}
 
 	public boolean b(Block b) {
 		if(b == null){
@@ -44,6 +50,10 @@ public abstract class Utility {
 			}
 		}
 		return false;
+	}
+	
+	public boolean b(Player p, String perm) {
+		return p.hasPermission(perm);
 	}
 
 	public String c(Potion p) {
@@ -84,10 +94,27 @@ public abstract class Utility {
 		try {
 			return manager.getWorld(world);
 		} catch (NullPointerException ex) {
-			manager.getLogger().warning(
-					"No config found for " + world + ", generating one now");
-			manager.load();
-			return manager.getWorld(world);
+			manager.getLogger().warning("No config found for " + world + ", generating one now");
+			return manager.load(world);
 		}
+	}
+	
+	public static Potion fromDamage(int damage) {
+		PotionType type = PotionType.getByDamageValue(damage & 0xF);
+		Potion potion;
+		if (type == null || (type == PotionType.WATER && damage != 0)) {
+			potion = new Potion(damage & 0x3F);
+		} else {
+			int level = (damage & 0x20) >> 5;
+			level++;
+			potion = new Potion(type, level);
+		}
+		if ((damage & 0x4000) > 0) {
+			potion = potion.splash();
+		}
+		if ((damage & 0x40) > 0) {
+			potion = potion.extend();
+		}
+		return potion;
 	}
 }
