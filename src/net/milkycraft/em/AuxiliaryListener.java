@@ -11,11 +11,9 @@ import static org.bukkit.entity.EntityType.FISHING_HOOK;
 import static org.bukkit.entity.EntityType.SNOWBALL;
 import static org.bukkit.entity.EntityType.SPLASH_POTION;
 import static org.bukkit.entity.EntityType.THROWN_EXP_BOTTLE;
-import net.milkycraft.em.config.ConfigHelper;
 import net.milkycraft.em.config.WorldConfiguration;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -37,21 +35,19 @@ public class AuxiliaryListener extends Utility implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onLightning(LightningStrikeEvent e) {
-		e.setCancelled(get(e.getWorld().getName()).get(LIGHTNING));
+		e.setCancelled(a(e.getWorld()).get(LIGHTNING));
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onThunderChange(ThunderChangeEvent e) {
-		boolean cancel = e.toThunderState() ? get(e.getWorld().getName()).get(
-				THUNDER) : false;
-		e.setCancelled(cancel);
+		boolean b = e.toThunderState();
+		e.setCancelled(b ? a(e.getWorld()).get(THUNDER) : false);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onWeatherChange(WeatherChangeEvent e) {
-		boolean cancel = e.toWeatherState() ? super.get(e.getWorld().getName())
-				.get(RAIN) : false;
-		e.setCancelled(cancel);
+		boolean b = e.toWeatherState();
+		e.setCancelled(b ? a(e.getWorld()).get(RAIN) : false);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -59,20 +55,20 @@ public class AuxiliaryListener extends Utility implements Listener {
 		if (!(e.getEntity().getShooter() instanceof Player)) {
 			return;
 		}
-		WorldConfiguration conf = get(e.getEntity().getWorld().getName());
+		WorldConfiguration conf = a(e.getEntity().getWorld());
 		Player p = (Player) e.getEntity().getShooter();
-		Entity en = e.getEntity();
-		if (en.getType() == EntityType.EGG) {
+		EntityType type = e.getEntity().getType();
+		if (type == EntityType.EGG) {
 			if (conf.getBlockedUsage().contains(Material.EGG)) {
-				if (!p.hasPermission("entitymanager.interact.egg")) {
+				if (!b(p, "entitymanager.interact.egg")) {
 					e.setCancelled(true);
 					al(conf, "Player " + p.getName() + " tried to throw a egg");
 					al(conf, p, "&cYou don't have permission to throw eggs.");
 				}
 			}
-		} else if (en.getType() == SNOWBALL) {
+		} else if (type == SNOWBALL) {
 			if (conf.getBlockedUsage().contains(SNOW_BALL)) {
-				if (!p.hasPermission("entitymanager.interact.snow_ball")) {
+				if (!b(p, "entitymanager.interact.snow_ball")) {
 					e.setCancelled(true);
 					al(conf, "Player " + p.getName()
 							+ " tried to throw a snowball");
@@ -80,9 +76,9 @@ public class AuxiliaryListener extends Utility implements Listener {
 							"&cYou don't have permission to throw snowballs.");
 				}
 			}
-		} else if (en.getType() == THROWN_EXP_BOTTLE) {
+		} else if (type == THROWN_EXP_BOTTLE) {
 			if (conf.getBlockedUsage().contains(EXP_BOTTLE)) {
-				if (!p.hasPermission("entitymanager.interact.exp_bottle")) {
+				if (!b(p, "entitymanager.interact.exp_bottle")) {
 					e.setCancelled(true);
 					al(conf, "Player " + p.getName()
 							+ " tried to use an exp bottle.");
@@ -90,23 +86,22 @@ public class AuxiliaryListener extends Utility implements Listener {
 							"&cYou don't have permission to throw exp bottles.");
 				}
 			}
-		} else if (en.getType() == EntityType.ENDER_PEARL) {
+		} else if (type == EntityType.ENDER_PEARL) {
 			if (conf.getBlockedUsage().contains(Material.ENDER_PEARL)) {
-				if (!p.hasPermission("entitymanager.interact.ender_pearl")) {
+				if (!b(p, "entitymanager.interact.ender_pearl")) {
 					e.setCancelled(true);
 					al(conf, "Player " + p.getName()
 							+ " tried to use an ender pearl");
 					al(conf, p,
 							"&cYou don't have permission to throw ender pearls.");
-
 				}
 			}
-		} else if (en.getType() == SPLASH_POTION) {
+		} else if (type == SPLASH_POTION) {
 			if (conf.getBlockedUsage().contains(POTION)) {
 				ItemStack is = p.getItemInHand();
-				Potion b = ConfigHelper.fromDamage(is.getDurability());
+				Potion b = fromDamage(is.getDurability());
 				if (conf.getPotions().contains(b)) {
-					if (!p.hasPermission("entitymanager.interact.splash_potion")) {
+					if (!b(p, "entitymanager.interact.splash_potion")) {
 						e.setCancelled(true);
 						al(conf, "Player " + p.getName()
 								+ " tried to throw a splash potion");
@@ -115,14 +110,12 @@ public class AuxiliaryListener extends Utility implements Listener {
 					}
 				}
 			}
-		} else if (en.getType() == FISHING_HOOK) {
-			if (conf.get(FISHING)
-					&& !p.hasPermission("entitymanager.interact.fishing")) {
+		} else if (type == FISHING_HOOK) {
+			if (conf.get(FISHING) && !b(p, "entitymanager.interact.fishing")) {
 				e.setCancelled(true);
 				al(conf, "Player " + p.getName() + " tried to fish");
 				al(conf, p, "&cYou don't have permission to fish.");
 			}
 		}
 	}
-
 }
