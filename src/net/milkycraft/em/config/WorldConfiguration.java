@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import net.milkycraft.em.EntityManager;
+import net.milkycraft.em.Utility;
 
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -74,7 +75,7 @@ public class WorldConfiguration extends ConfigLoader {
 				if (s.toLowerCase().startsWith("potion")) {
 					String[] args = s.split(":");
 					Integer id = Integer.parseInt(args[1]);
-					Potion p = ConfigHelper.fromDamage(id);
+					Potion p = Utility.fromDamage(id);
 					this.dispots.add(p.getNameId());
 					if (!usageBlock.contains(Material.POTION)) {
 						usageBlock.add(Material.POTION);
@@ -94,7 +95,7 @@ public class WorldConfiguration extends ConfigLoader {
 				if (s.toLowerCase().startsWith("potion")) {
 					String[] args = s.split(":");
 					Integer id = Integer.parseInt(args[1]);
-					Potion p = ConfigHelper.fromDamage(id);
+					Potion p = Utility.fromDamage(id);
 					this.disDpots.add(p.getNameId());
 					if (!disBlock.contains(Material.POTION)) {
 						disBlock.add(Material.POTION);
