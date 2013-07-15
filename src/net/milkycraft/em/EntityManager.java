@@ -34,8 +34,14 @@ public class EntityManager extends JavaPlugin {
 	public void load() {
 		configs = new ArrayList<WorldConfiguration>();
 		for (World w : Bukkit.getWorlds()) {
-			configs.add(new WorldConfiguration(this, w.getName()));
+			load(w.getName());
 		}
+	}
+	
+	public WorldConfiguration load(String w) {
+		WorldConfiguration wc = new WorldConfiguration(this, w);
+		configs.add(wc);
+		return wc;
 	}
 
 	public WorldConfiguration getWorld(String world) {
