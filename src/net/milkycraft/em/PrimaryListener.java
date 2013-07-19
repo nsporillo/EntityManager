@@ -72,7 +72,7 @@ public class PrimaryListener extends Utility implements Listener {
 				}
 			} else if (e.getItem().getType().equals(Material.MONSTER_EGG)) {
 				EntityType type = fromId(e.getItem().getDurability());
-				if (c.getBlockedEggs().contains(type)) {
+				if (c.get(3).contains(type.toString())) {
 					if (!b(pl, "entitymanager.spawn." + str)) {
 						if (b(e.getClickedBlock())) {
 							e.setUseItemInHand(Result.DENY);
@@ -87,13 +87,13 @@ public class PrimaryListener extends Utility implements Listener {
 						}
 					}
 				}
-			} else if (c.getBlockedUsage().contains(e.getItem().getType())) {
+			} else if (c.get(1).contains(e.getItem().getType().toString())) {
 				if (e.getItem().getType() == Material.POTION) {
 					Potion b = fromDamage(e.getItem().getDurability());
 					if (b(pl, "entitymanager.interact.potion." + b.getNameId())) {
 						return;
 					}
-					if (c.getPotions().contains(b.getNameId())) {
+					if (c.get(6).contains(b.getNameId())) {
 						if (b(e.getClickedBlock())) {
 							e.setUseItemInHand(Result.DENY);
 							return;
@@ -210,8 +210,8 @@ public class PrimaryListener extends Utility implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onSpawn(CreatureSpawnEvent e) {
 		WorldConfiguration conf = a(e.getEntity().getWorld());
-		if (conf.getBlockedMobs().contains(e.getEntityType())
-				|| conf.getBlockedReasons().contains(e.getSpawnReason())) {
+		if (conf.get(4).contains(e.getEntityType().toString())
+				|| conf.get(5).contains(e.getSpawnReason().toString())) {
 			e.setCancelled(true);
 			return;
 		} else if (e.getSpawnReason().equals(SpawnReason.SPAWNER)) {
@@ -249,7 +249,7 @@ public class PrimaryListener extends Utility implements Listener {
 			if (b(p, "entitymanager.interact.potion." + b.getNameId())) {
 				return;
 			}
-			if (conf.getPotions().contains(b.getNameId())) {
+			if (conf.get(6).contains(b.getNameId())) {
 				e.setCancelled(true);
 				al(conf, "Player " + p.getName() + " tried to use an " + c(b)
 						+ " potion" + ".");
@@ -272,10 +272,10 @@ public class PrimaryListener extends Utility implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onDispense(BlockDispenseEvent e) {
 		WorldConfiguration conf = a(e.getBlock().getWorld());
-		if (conf.getBlockedDispense().contains(e.getItem().getType())) {
+		if (conf.get(2).contains(e.getItem().getType().toString())) {
 			if (e.getItem().getType() == Material.POTION) {
 				Potion b = fromDamage(e.getItem().getDurability());
-				if (conf.getDPotions().contains(b.getNameId())) {
+				if (conf.get(7).contains(b.getNameId())) {
 					e.setCancelled(true);
 				}
 				return;
