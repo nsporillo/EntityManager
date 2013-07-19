@@ -13,7 +13,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public abstract class ConfigLoader {
 
-	protected FileConfiguration config;
+	protected FileConfiguration c;
 	protected File configFile;
 	protected File dataFolder;
 	protected String fileName;
@@ -38,11 +38,11 @@ public abstract class ConfigLoader {
 			}
 			writeConfig(def);
 		}
-		config = YamlConfiguration.loadConfiguration(configFile);
+		c = YamlConfiguration.loadConfiguration(configFile);
 	}
 
 	protected void addDefaults() {
-		config.options().copyDefaults(true);
+		c.options().copyDefaults(true);
 		saveConfig();
 	}
 
@@ -58,19 +58,19 @@ public abstract class ConfigLoader {
 	protected abstract void loadKeys();
 
 	protected void rereadFromDisk() {
-		config = YamlConfiguration.loadConfiguration(configFile);
+		c = YamlConfiguration.loadConfiguration(configFile);
 	}
 
 	protected void saveConfig() {
 		try {
-			config.save(configFile);
+			c.save(configFile);
 		} catch (IOException ex) {
 			//
 		}
 	}
 
 	protected void set(String key, Object value) {
-		config.set(key, value);
+		c.set(key, value);
 		this.saveConfig();
 	}
 
