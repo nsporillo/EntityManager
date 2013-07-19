@@ -56,7 +56,7 @@ public abstract class Utility {
 		return p.hasPermission(perm);
 	}
 
-	public String c(Potion p) {
+	public static String c(Potion p) {
 		return p.getType().name().toLowerCase()
 				+ (p.getLevel() == 1 ? "" : " II")
 				+ (p.isSplash() ? " splash" : "");
