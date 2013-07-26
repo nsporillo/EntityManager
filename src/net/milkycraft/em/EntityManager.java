@@ -13,16 +13,18 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class EntityManager extends JavaPlugin {
-	
+
 	private CommandHandler handler = new CommandHandler(this);
 	private List<WorldConfiguration> configs;
+	private PrimaryListener pl;
+	private AuxiliaryListener al;
 
 	@Override
 	public void onEnable() {
-		this.load();		 
+		this.load();
 		new TimeManager(this);
-		new PrimaryListener(this);
-		new AuxiliaryListener(this);
+		pl = new PrimaryListener(this);
+		al = new AuxiliaryListener(this);
 	}
 
 	@Override
@@ -30,14 +32,14 @@ public class EntityManager extends JavaPlugin {
 		handler.runCommand(s, l, a);
 		return true;
 	}
-	
+
 	public void load() {
 		configs = new ArrayList<WorldConfiguration>();
 		for (World w : Bukkit.getWorlds()) {
 			load(w.getName());
 		}
 	}
-	
+
 	public WorldConfiguration load(String w) {
 		WorldConfiguration wc = new WorldConfiguration(this, w);
 		configs.add(wc);
@@ -52,7 +54,15 @@ public class EntityManager extends JavaPlugin {
 		}
 		throw new NullPointerException();
 	}
-	
+
+	public PrimaryListener getPrimaryListener() {
+		return pl;
+	}
+
+	public AuxiliaryListener getAuxiliaryListener() {
+		return al;
+	}
+
 	public List<WorldConfiguration> getWorlds() {
 		return this.configs;
 	}
