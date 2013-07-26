@@ -1,11 +1,17 @@
 package net.milkycraft.em.config;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import net.milkycraft.em.EntityManager;
 import net.milkycraft.em.Utility;
+import static net.milkycraft.em.config.Type.valueOf;
 
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.potion.Potion;
@@ -13,17 +19,17 @@ import org.bukkit.potion.Potion;
 public class WorldConfiguration extends ConfigLoader {
 
 	private final String world;
-	private final String local = "1.4";
+	private final String local = "1.5";
 	private String confRev;
-	private boolean[] b = new boolean[18];
+	private boolean[] b = new boolean[20];
 	private long[] l = new long[2];
-	private List<String> usageBlock = new ArrayList<String>();
-	private List<String> disDBlock = new ArrayList<String>();
-	private List<String> disEggs = new ArrayList<String>();
-	private List<String> disMobs = new ArrayList<String>();
-	private List<String> disReasons = new ArrayList<String>();
-	private List<Integer> disPots = new ArrayList<Integer>();
-	private List<Integer> disDpots = new ArrayList<Integer>();
+	private Set<String> usageBlock = new HashSet<String>();
+	private Set<String> disDBlock = new HashSet<String>();
+	private Map<String, Type> disEggs = new HashMap<String, Type>();
+	private Map<String, Type> disMobs = new HashMap<String, Type>();
+	private Set<String> disReasons = new HashSet<String>();
+	private Set<Integer> disPots = new HashSet<Integer>();
+	private Set<Integer> disDpots = new HashSet<Integer>();
 
 	public WorldConfiguration(EntityManager plugin, String world) {
 		super(plugin, world + ".yml");
@@ -54,14 +60,14 @@ public class WorldConfiguration extends ConfigLoader {
 		b[15] = c.getBoolean("DeathManager.Player.Keep_Exp", false);
 		b[16] = c.getBoolean("DeathManager.Entity.Drop_Exp", true);
 		b[17] = c.getBoolean("DeathManager.Entity.Drop_Items", true);
+		b[18] = c.getBoolean("DeathManager.Player.Keep_Items", false);
+		b[19] = c.getBoolean("SpawnManager.Remove_Armor", false);
 		l[0] = c.getLong("TimeManager.Target_Time", 12000L);
 		l[1] = c.getLong("TimeManager.Set_Every", 100L);
 		this.loadLists();
-		for(Integer in : disPots) {
-			plugin.getLogger().info("Potion:" + in);
-		}
+		this.log();
 	}
-	
+
 	private void loadLists() {
 		final EntityManager em = super.plugin;
 		for (String s : c.getStringList("Disable.Usage.Blocked_Items")) {
@@ -102,7 +108,7 @@ public class WorldConfiguration extends ConfigLoader {
 		}
 		for (String s : c.getStringList("EggManager.Disabled_Eggs")) {
 			try {
-				disEggs.add(s.toUpperCase());
+				disEggs.put(s.toUpperCase(), Type.ALL);
 			} catch (Exception ex) {
 				em.getLogger().severe("Invalid value: " + s);
 				em.getLogger().severe("Reference: http://goo.gl/E7mVB");
@@ -110,7 +116,23 @@ public class WorldConfiguration extends ConfigLoader {
 		}
 		for (String s : c.getStringList("SpawnManager.Disallowed_Mobs")) {
 			try {
-				disMobs.add(s.toUpperCase());
+				if (s.indexOf(":") <= 0) {
+					disMobs.put(s.toUpperCase(), Type.ALL);
+				} else {
+					String[] args = s.split(":");
+					String one = args[1].toUpperCase();
+					if (args.length == 2) {
+						disMobs.put(args[0].toUpperCase(),valueOf(one));
+					} else if (args.length == 3) {
+						if (one.equalsIgnoreCase("baby")
+								|| one.equalsIgnoreCase("villager")) {
+							if (args[2].equalsIgnoreCase("baby")
+									|| args[2].equalsIgnoreCase("villager")) {
+								disMobs.put(args[0].toUpperCase(), Type.BOTH);
+							}
+						}
+					}
+				}
 			} catch (Exception ex) {
 				em.getLogger().severe("Invalid value: " + s);
 				em.getLogger().severe("Reference: http://goo.gl/E7mVB");
@@ -122,6 +144,19 @@ public class WorldConfiguration extends ConfigLoader {
 			} catch (Exception ex) {
 				em.getLogger().severe("Invalid value: " + s);
 				em.getLogger().severe("Reference: http://goo.gl/a4XRB");
+			}
+		}
+	}
+	
+	private void log(){
+		if(b[2]) {
+			plugin.getLogger().info("== The following mobs are blocked from spawning ==");
+			for(Entry<String, Type> entry : disMobs.entrySet()) {
+				plugin.getLogger().info("Mob: " + entry.getKey() + " Type: " + entry.getValue());
+			}
+			plugin.getLogger().info("== The following mob spawn reasons are blocked ==");
+			for(String str : disReasons) {
+				plugin.getLogger().info("SpawnReason: " + str);
 			}
 		}
 	}
@@ -162,6 +197,13 @@ public class WorldConfiguration extends ConfigLoader {
 			super.set("Disable.Usage.Blocked_Items", list);
 			lg.info("Successfully updated " + fileName + " to 1.4");
 		} else if (revision.equals("1.4")) {
+			super.set("Settings.Config_Revision", this.local);
+			super.set("DeathManager.Player.Keep_Items", false);
+			super.set("SpawnManager.Remove_Armor", false);
+			List<String> list = c.getStringList("SpawnManager.Disallowed_Mobs");
+			list.add("Zombie:baby:villager");
+			super.set("SpawnManager.Disallowed_Mobs", list);
+			lg.info("Successfully updated " + fileName + " to 1.5");
 			return;
 		} else if (revision.equals("1.5")) {
 			return;
@@ -188,15 +230,11 @@ public class WorldConfiguration extends ConfigLoader {
 		return this.world;
 	}
 
-	public List<?> get(int i) {
+	public Set<?> get(int i) {
 		if (i == 1) {
 			return this.disDBlock;
 		} else if (i == 2) {
 			return this.usageBlock;
-		} else if (i == 3) {
-			return this.disEggs;
-		} else if (i == 4) {
-			return this.disMobs;
 		} else if (i == 5) {
 			return this.disReasons;
 		} else if (i == 6) {
@@ -205,6 +243,13 @@ public class WorldConfiguration extends ConfigLoader {
 			return this.disDpots;
 		}
 		return null;
+	}
+
+	public Map<String, Type> getMap(int i) {
+		if (i == 1) {
+			return this.disEggs;
+		}
+		return this.disMobs;
 	}
 
 	public boolean get(Option op) {
