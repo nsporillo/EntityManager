@@ -37,7 +37,8 @@ public class CommandHandler {
 	}
 
 	private void showHelp(CommandSender s, String l) {
-		s.sendMessage(GREEN + "===" + GOLD + " EntityManager Help " + GREEN + "===");
+		s.sendMessage(GREEN + "===" + GOLD + " EntityManager Help " + GREEN
+				+ "===");
 		for (Command cmd : this.cmds.values()) {
 			if (cmd.checkPermission(s)) {
 				cmd.showHelp(s, l);
