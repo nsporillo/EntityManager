@@ -59,7 +59,7 @@ public class AuxiliaryListener extends Utility implements Listener {
 		Player p = (Player) e.getEntity().getShooter();
 		EntityType type = e.getEntity().getType();
 		if (type == EntityType.EGG) {
-			if (conf.get(1).contains(Material.EGG)) {
+			if (conf.get(1).contains(Material.EGG.toString())) {
 				if (!b(p, "entitymanager.interact.egg")) {
 					e.setCancelled(true);
 					al(conf, "Player " + p.getName() + " tried to throw a egg");
@@ -67,7 +67,7 @@ public class AuxiliaryListener extends Utility implements Listener {
 				}
 			}
 		} else if (type == SNOWBALL) {
-			if (conf.get(1).contains(SNOW_BALL)) {
+			if (conf.get(1).contains(SNOW_BALL.toString())) {
 				if (!b(p, "entitymanager.interact.snow_ball")) {
 					e.setCancelled(true);
 					al(conf, "Player " + p.getName()
@@ -77,7 +77,7 @@ public class AuxiliaryListener extends Utility implements Listener {
 				}
 			}
 		} else if (type == THROWN_EXP_BOTTLE) {
-			if (conf.get(1).contains(EXP_BOTTLE)) {
+			if (conf.get(1).contains(EXP_BOTTLE.toString())) {
 				if (!b(p, "entitymanager.interact.exp_bottle")) {
 					e.setCancelled(true);
 					al(conf, "Player " + p.getName()
@@ -87,7 +87,7 @@ public class AuxiliaryListener extends Utility implements Listener {
 				}
 			}
 		} else if (type == EntityType.ENDER_PEARL) {
-			if (conf.get(1).contains(Material.ENDER_PEARL)) {
+			if (conf.get(1).contains(Material.ENDER_PEARL.toString())) {
 				if (!b(p, "entitymanager.interact.ender_pearl")) {
 					e.setCancelled(true);
 					al(conf, "Player " + p.getName()
@@ -97,10 +97,10 @@ public class AuxiliaryListener extends Utility implements Listener {
 				}
 			}
 		} else if (type == SPLASH_POTION) {
-			if (conf.get(1).contains(POTION)) {
+			if (conf.get(1).contains(POTION.toString())) {
 				ItemStack is = p.getItemInHand();
 				Potion b = fromDamage(is.getDurability());
-				if (conf.get(6).contains(b)) {
+				if (conf.get(6).contains(b.getNameId())) {
 					if (!b(p, "entitymanager.interact.splash_potion")) {
 						e.setCancelled(true);
 						al(conf, "Player " + p.getName()
