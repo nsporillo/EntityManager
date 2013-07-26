@@ -8,6 +8,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.potion.Potion;
@@ -16,7 +18,8 @@ import org.bukkit.potion.PotionType;
 public abstract class Utility {
 
 	private EntityManager manager;
-	private int[] ids = { 23, 54, 61, 62, 69, 77, 84, 116, 117, 130, 138, 143,145 };
+	private int[] ids = { 23, 54, 61, 62, 69, 77, 84, 116, 117, 130, 138, 143,
+			145 };
 
 	public Utility(EntityManager manager) {
 		this.manager = manager;
@@ -35,13 +38,17 @@ public abstract class Utility {
 		}
 		return false;
 	}
-	
+
 	public WorldConfiguration a(World w) {
 		return this.get(w.getName());
 	}
 
+	public WorldConfiguration a(Entity e) {
+		return this.get(e.getWorld().getName());
+	}
+
 	public boolean b(Block b) {
-		if(b == null){
+		if (b == null) {
 			return false;
 		}
 		for (int i : ids) {
@@ -51,7 +58,7 @@ public abstract class Utility {
 		}
 		return false;
 	}
-	
+
 	public boolean b(Player p, String perm) {
 		return p.hasPermission(perm);
 	}
@@ -94,11 +101,12 @@ public abstract class Utility {
 		try {
 			return manager.getWorld(world);
 		} catch (NullPointerException ex) {
-			manager.getLogger().warning("No config found for " + world + ", generating one now");
+			manager.getLogger().warning(
+					"No config found for " + world + ", generating one now");
 			return manager.load(world);
 		}
 	}
-	
+
 	public static Potion fromDamage(int damage) {
 		PotionType type = PotionType.getByDamageValue(damage & 0xF);
 		Potion potion;
