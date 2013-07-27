@@ -1,11 +1,8 @@
 package net.milkycraft.em.config;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -13,8 +10,13 @@ import net.milkycraft.em.EntityManager;
 import net.milkycraft.em.Utility;
 import static net.milkycraft.em.config.Type.valueOf;
 
+import org.bukkit.DyeColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.potion.Potion;
+
+import com.avaje.ebeaninternal.server.deploy.BeanDescriptor.EntityType;
 
 public class WorldConfiguration extends ConfigLoader {
 
@@ -25,8 +27,8 @@ public class WorldConfiguration extends ConfigLoader {
 	private long[] l = new long[2];
 	private Set<String> usageBlock = new HashSet<String>();
 	private Set<String> disDBlock = new HashSet<String>();
-	private Map<String, Type> disEggs = new HashMap<String, Type>();
-	private Map<String, Type> disMobs = new HashMap<String, Type>();
+	private Set<String> disEggs = new HashSet<String>();
+	private Set<EMEntity> disMobs = new HashSet<EMEntity>();
 	private Set<String> disReasons = new HashSet<String>();
 	private Set<Integer> disPots = new HashSet<Integer>();
 	private Set<Integer> disDpots = new HashSet<Integer>();
@@ -72,7 +74,7 @@ public class WorldConfiguration extends ConfigLoader {
 		final EntityManager em = super.plugin;
 		for (String s : c.getStringList("Disable.Usage.Blocked_Items")) {
 			try {
-				usageBlock.add(s.toUpperCase());
+				usageBlock.add(Material.valueOf(s.toUpperCase()).toString());
 			} catch (Exception ex) {
 				if (s.toLowerCase().startsWith("potion")) {
 					String[] args = s.split(":");
@@ -90,7 +92,7 @@ public class WorldConfiguration extends ConfigLoader {
 		}
 		for (String s : c.getStringList("Disable.Dispensing.Blocked_Items")) {
 			try {
-				disDBlock.add(s.toUpperCase());
+				disDBlock.add(Material.valueOf(s.toUpperCase()).toString());
 			} catch (Exception ex) {
 				if (s.toLowerCase().startsWith("potion")) {
 					String[] args = s.split(":");
@@ -108,7 +110,7 @@ public class WorldConfiguration extends ConfigLoader {
 		}
 		for (String s : c.getStringList("EggManager.Disabled_Eggs")) {
 			try {
-				disEggs.put(s.toUpperCase(), Type.ALL);
+				disEggs.add(EntityType.valueOf(s.toUpperCase()).toString());
 			} catch (Exception ex) {
 				em.getLogger().severe("Invalid value: " + s);
 				em.getLogger().severe("Reference: http://goo.gl/E7mVB");
@@ -117,18 +119,37 @@ public class WorldConfiguration extends ConfigLoader {
 		for (String s : c.getStringList("SpawnManager.Disallowed_Mobs")) {
 			try {
 				if (s.indexOf(":") <= 0) {
-					disMobs.put(s.toUpperCase(), Type.ALL);
+					disMobs.add(new EMEntity(s.toUpperCase(), Type.ALL,
+							Byte.MAX_VALUE));
 				} else {
 					String[] args = s.split(":");
 					String one = args[1].toUpperCase();
 					if (args.length == 2) {
-						disMobs.put(args[0].toUpperCase(),valueOf(one));
-					} else if (args.length == 3) {
-						if (one.equalsIgnoreCase("baby")
-								|| one.equalsIgnoreCase("villager")) {
-							if (args[2].equalsIgnoreCase("baby")
-									|| args[2].equalsIgnoreCase("villager")) {
-								disMobs.put(args[0].toUpperCase(), Type.BOTH);
+						Meta meta;
+						try {
+							meta = new Meta(valueOf(one), Byte.MAX_VALUE);
+						} catch (Exception ex) {
+							meta = new Meta(Type.ALL, DyeColor.valueOf(
+									one.toUpperCase()).getWoolData());
+						}
+						disMobs.add(new EMEntity(args[0].toUpperCase(), meta));
+					} else if (args.length > 2) {
+						if (args[0].equalsIgnoreCase("zombie")) {
+							if (one.equalsIgnoreCase("baby")
+									|| one.equalsIgnoreCase("villager")) {
+								if (args[2].equalsIgnoreCase("baby")
+										|| args[2].equalsIgnoreCase("villager")) {
+									disMobs.add(new EMEntity(args[0]
+											.toUpperCase(), Type.BOTH,
+											Byte.MAX_VALUE));
+								}
+							}
+						} else if (args[0].equalsIgnoreCase("sheep")) {
+							if (one.equalsIgnoreCase("baby")) {
+								disMobs.add(new EMEntity(args[0].toUpperCase(),
+										Type.BABY, DyeColor.valueOf(
+												args[2].toUpperCase())
+												.getWoolData()));
 							}
 						}
 					}
@@ -140,22 +161,34 @@ public class WorldConfiguration extends ConfigLoader {
 		}
 		for (String s : c.getStringList("SpawnManager.Disallowed_Reasons")) {
 			try {
-				disReasons.add(s.toUpperCase());
+				disReasons.add(SpawnReason.valueOf(s.toUpperCase()).toString());
 			} catch (Exception ex) {
 				em.getLogger().severe("Invalid value: " + s);
 				em.getLogger().severe("Reference: http://goo.gl/a4XRB");
 			}
 		}
+		this.e(this.usageBlock);
 	}
 	
-	private void log(){
-		if(b[2]) {
-			plugin.getLogger().info("== The following mobs are blocked from spawning ==");
-			for(Entry<String, Type> entry : disMobs.entrySet()) {
-				plugin.getLogger().info("Mob: " + entry.getKey() + " Type: " + entry.getValue());
+	public void e(Set<String> usageBlock2) {
+		for(String str : usageBlock2) {
+			plugin.getLogger().info("Value: " + str);
+		}
+	}
+
+	private void log() {
+		if (b[2]) {
+			plugin.getLogger().info(
+					"== The following mobs are blocked from spawning ==");
+			for (EMEntity entry : disMobs) {
+				plugin.getLogger().info(
+						"Mob: " + entry.getName() + " Type: "
+								+ entry.getBreed() + " Color: "
+								+ entry.getColor());
 			}
-			plugin.getLogger().info("== The following mob spawn reasons are blocked ==");
-			for(String str : disReasons) {
+			plugin.getLogger().info(
+					"== The following mob spawn reasons are blocked ==");
+			for (String str : disReasons) {
 				plugin.getLogger().info("SpawnReason: " + str);
 			}
 		}
@@ -235,6 +268,10 @@ public class WorldConfiguration extends ConfigLoader {
 			return this.disDBlock;
 		} else if (i == 2) {
 			return this.usageBlock;
+		} else if (i == 3) {
+			return this.disEggs;
+		} else if (i == 4) {
+			return this.disMobs;
 		} else if (i == 5) {
 			return this.disReasons;
 		} else if (i == 6) {
@@ -245,11 +282,58 @@ public class WorldConfiguration extends ConfigLoader {
 		return null;
 	}
 
-	public Map<String, Type> getMap(int i) {
-		if (i == 1) {
-			return this.disEggs;
+	public boolean has(String s) {
+		for (EMEntity eme : this.disMobs) {
+			if (eme.getName().equals(s)) {
+				return true;
+			}
 		}
-		return this.disMobs;
+		return false;
+	}
+
+	public boolean block(String en, Type type) {
+		for (EMEntity eme : this.disMobs) {
+			if (eme.getName().equals(en)) {
+				if (eme.getBreed() == type) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public boolean block(String en, Type type, byte color) {
+		for (EMEntity eme : this.disMobs) {
+			if (eme.getName().equals(en)) {
+				if (eme.getBreed() == type) {
+					if (eme.getColor() == color) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	public boolean block(String en, byte color) {
+		for (EMEntity eme : this.disMobs) {
+			if (eme.getName().equals(en)) {
+				if (eme.getColor() == color) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public Set<EMEntity> getAll(Entity e) {
+		Set<EMEntity> set = new HashSet<EMEntity>();
+		for (EMEntity eme : this.disMobs) {
+			if (eme.getType() == e.getType()) {
+				set.add(eme);
+			}
+		}
+		return set;
 	}
 
 	public boolean get(Option op) {
