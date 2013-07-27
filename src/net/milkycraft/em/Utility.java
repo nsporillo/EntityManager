@@ -6,11 +6,14 @@ import net.milkycraft.em.config.WorldConfiguration;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Sheep;
 import org.bukkit.event.Listener;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
@@ -20,6 +23,10 @@ public abstract class Utility {
 	private EntityManager manager;
 	private int[] ids = { 23, 54, 61, 62, 69, 77, 84, 116, 117, 130, 138, 143,
 			145 };
+	public String[] p = { "entitymanager.interact.trade",
+			"entitymanager.interact.shoot", "entitymanager.interact.enchant",
+			"entitymanager.interact.anvil", "entitymanager.death.keepexp",
+			"entitymanager.death.keepitems" };
 
 	public Utility(EntityManager manager) {
 		this.manager = manager;
@@ -46,7 +53,18 @@ public abstract class Utility {
 	public WorldConfiguration a(Entity e) {
 		return this.get(e.getWorld().getName());
 	}
-
+	
+	public void update(Sheep e) {
+		double health = e.getHealth();
+		Location loc = e.getLocation();
+		DyeColor dc = e.getColor();
+		String name = e.getCustomName();
+		e.remove();
+		Sheep sheep = (Sheep)loc.getWorld().spawnEntity(loc, EntityType.SHEEP);
+		sheep.setHealth(health);
+		sheep.setColor(dc);
+		sheep.setCustomName(name);
+	}
 	public boolean b(Block b) {
 		if (b == null) {
 			return false;
