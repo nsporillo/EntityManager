@@ -2,6 +2,7 @@
 # Blocked items require permission to override 
 # Do NOT change Config_Revision unless you want unexpected errors!
 # Potion blocking - 'Potion:(potionid)' - Can block from dispensers and usage
+# Entity blocking - 'Zombie:baby:villager' - Blocks baby zombie villagers. 'Zombie:villager' - Blocks zombie villagers 'Zombie:baby' - blocks baby zombies 'sheep:baby:green' - Blocks green baby sheep 'sheep:green' - Blocks all green sheep
 Settings:
   Config_Revision: 1.4
   Admin-Alerts: true
@@ -19,6 +20,7 @@ Disable:
     Enchanting: false
     Fireworks: false
     Trading: false
+    Portal_Creation: false
   Usage:
     Blocked_Items:
     - Exp_Bottle
