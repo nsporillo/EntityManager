@@ -7,7 +7,6 @@ import static net.milkycraft.objects.Type.BOTH;
 
 import java.util.Set;
 
-import net.milkycraft.Utility;
 import net.milkycraft.objects.Item;
 import net.milkycraft.objects.Meta;
 import net.milkycraft.objects.Spawnable;
@@ -30,7 +29,7 @@ public class ConfigUtility {
 				if (s.toLowerCase().startsWith("potion")) {
 					String[] args = s.split(":");
 					Integer id = Integer.parseInt(args[1]);
-					Potion p = Utility.fromDamage(id);
+					Potion p = Potion.fromDamage(id);
 					wc.usageBlock.add(new Item(373, p.getNameId(), true));
 				} else {
 					wc.plugin.getLogger().severe("Invalid value: " + s);
@@ -49,7 +48,7 @@ public class ConfigUtility {
 				if (s.toLowerCase().startsWith("potion")) {
 					String[] args = s.split(":");
 					Integer id = Integer.parseInt(args[1]);
-					Potion p = Utility.fromDamage(id);
+					Potion p = Potion.fromDamage(id);
 					wc.dispBlock.add(new Item(373, p.getNameId(), true));
 				} else {
 					wc.plugin.getLogger().severe("Invalid value: " + s);
