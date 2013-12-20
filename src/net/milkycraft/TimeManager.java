@@ -1,10 +1,10 @@
 package net.milkycraft;
 
-import org.bukkit.Bukkit;
-import org.bukkit.World;
-
 import net.milkycraft.config.WorldConfiguration;
 import net.milkycraft.objects.Option;
+
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 
 public class TimeManager extends Utility {
 
