@@ -1,6 +1,13 @@
 package net.milkycraft;
 
-import static net.milkycraft.objects.Option.*;
+import static net.milkycraft.objects.Option.ENCHANTING;
+import static net.milkycraft.objects.Option.LIGHTNING;
+import static net.milkycraft.objects.Option.PDEATHEXP;
+import static net.milkycraft.objects.Option.PDEATHITEMS;
+import static net.milkycraft.objects.Option.PORTAL_CREATE;
+import static net.milkycraft.objects.Option.RAIN;
+import static net.milkycraft.objects.Option.SHOOTING;
+import static net.milkycraft.objects.Option.THUNDER;
 
 import java.util.HashMap;
 import java.util.List;
@@ -140,7 +147,7 @@ public class PrimaryListener extends Utility implements Listener {
 	public void onPotionSplash(PotionSplashEvent e) {
 		if (e.getEntity().getShooter() instanceof Player) {
 			Player p = (Player) e.getEntity().getShooter();
-			Potion b = fromDamage(e.getPotion().getItem().getDurability());
+			Potion b = Potion.fromItemStack(e.getPotion().getItem());
 			if (b(p, "entitymanager.interact.potion." + b.getNameId())) {
 				return;
 			}
@@ -195,7 +202,7 @@ public class PrimaryListener extends Utility implements Listener {
 	public void onDispense(BlockDispenseEvent e) {
 		WorldConfiguration conf = a(e.getBlock().getWorld());
 		if (e.getItem().getType() == Material.POTION) {
-			Potion b = fromDamage(e.getItem().getDurability());
+			Potion b = Potion.fromItemStack(e.getItem());
 			if (conf.dispensePotion(b.getNameId())) {
 				e.setCancelled(true);
 			}
@@ -203,7 +210,6 @@ public class PrimaryListener extends Utility implements Listener {
 			if (conf.dispense(e.getItem().getTypeId())) {
 				e.setCancelled(true);
 			}
-			return;
 		}
 	}
 }
