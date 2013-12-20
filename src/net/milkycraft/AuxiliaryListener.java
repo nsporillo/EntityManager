@@ -1,8 +1,23 @@
 package net.milkycraft;
 
-import static net.milkycraft.objects.Option.*;
-import static net.milkycraft.objects.Type.*;
-import static org.bukkit.entity.EntityType.*;
+import static net.milkycraft.objects.Option.EDEATHDROPS;
+import static net.milkycraft.objects.Option.EDEATHEXP;
+import static net.milkycraft.objects.Option.FIREWORKS;
+import static net.milkycraft.objects.Option.FISHING;
+import static net.milkycraft.objects.Option.NODROPS;
+import static net.milkycraft.objects.Option.NOEXP;
+import static net.milkycraft.objects.Option.NOMOBARMOR;
+import static net.milkycraft.objects.Option.TRADING;
+import static net.milkycraft.objects.Type.ALL;
+import static net.milkycraft.objects.Type.BABY;
+import static net.milkycraft.objects.Type.BOTH;
+import static org.bukkit.entity.EntityType.EGG;
+import static org.bukkit.entity.EntityType.ENDER_PEARL;
+import static org.bukkit.entity.EntityType.FISHING_HOOK;
+import static org.bukkit.entity.EntityType.SNOWBALL;
+import static org.bukkit.entity.EntityType.SPLASH_POTION;
+import static org.bukkit.entity.EntityType.THROWN_EXP_BOTTLE;
+import static org.bukkit.entity.EntityType.fromId;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
@@ -21,14 +36,14 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Zombie;
+import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.Event.Result;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -143,7 +158,7 @@ public class AuxiliaryListener extends Utility implements Listener {
 			}
 		} else if (type == SPLASH_POTION) {
 			ItemStack is = p.getItemInHand();
-			Potion b = fromDamage(is.getDurability());
+			Potion b = Potion.fromItemStack(is);
 			if (conf.usagePotion(b.getNameId())) {
 				if (!b(p, "entitymanager.interact.potion_" + b.getNameId())) {
 					e.setCancelled(true);
@@ -258,7 +273,7 @@ public class AuxiliaryListener extends Utility implements Listener {
 					}
 				}
 			} else if (e.getItem().getType() == Material.POTION) {
-				Potion b = fromDamage(e.getItem().getDurability());
+				Potion b = Potion.fromItemStack(e.getItem());
 				if (b(pl, "entitymanager.interact.potion." + b.getNameId())) {
 					return;
 				}
