@@ -13,6 +13,7 @@ import net.milkycraft.objects.Spawnable;
 import net.milkycraft.objects.Type;
 
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
+import org.bukkit.inventory.ItemStack;
 
 public class WorldConfiguration extends ConfigLoader {
 
@@ -175,7 +176,7 @@ public class WorldConfiguration extends ConfigLoader {
 	public boolean usagePotion(int pot) {
 		for (Item i : this.usageBlock) {
 			if (i.getId() == 373) {
-				if (i.getNameId() == pot) {
+				if (i.getDurability() == pot) {
 					return true;
 				}
 			}
@@ -195,7 +196,7 @@ public class WorldConfiguration extends ConfigLoader {
 	public boolean dispensePotion(int pot) {
 		for (Item i : this.dispBlock) {
 			if (i.getId() == 373) {
-				if (i.getNameId() == pot) {
+				if (i.getDurability() == pot) {
 					return true;
 				}
 			}
