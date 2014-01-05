@@ -12,6 +12,7 @@ import static net.milkycraft.objects.Option.THUNDER;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import net.milkycraft.config.WorldConfiguration;
 
@@ -40,6 +41,7 @@ import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionEffect;
 
 public class PrimaryListener extends Utility implements Listener {
 
@@ -144,16 +146,17 @@ public class PrimaryListener extends Utility implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	public void onPotionSplash(PotionSplashEvent e) {
+	public void onPotionSplash(PotionSplashEvent e) {		
 		if (e.getEntity().getShooter() instanceof Player) {
 			Player p = (Player) e.getEntity().getShooter();
-			Potion b = Potion.fromItemStack(e.getPotion().getItem());
-			if (b(p, "entitymanager.interact.potion." + b.getNameId())) {
+			ItemStack is = e.getPotion().getItem();			
+			if (b(p, "entitymanager.interact.potion." + is.getDurability())) {
 				return;
 			}
 			WorldConfiguration conf = a(p.getWorld());
-			if (conf.usagePotion(b.getNameId())) {
+			if (conf.usagePotion(is.getDurability())) {
 				e.setCancelled(true);
+				Potion b = Potion.fromItemStack(e.getPotion().getItem());
 				al(conf, "Player " + p.getName() + " tried to use an " + c(b) + " potion"
 						+ ".");
 				al(conf, p, "&cYou don't have permission to use that &6" + c(b)
@@ -201,13 +204,13 @@ public class PrimaryListener extends Utility implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onDispense(BlockDispenseEvent e) {
 		WorldConfiguration conf = a(e.getBlock().getWorld());
-		if (e.getItem().getType() == Material.POTION) {
-			Potion b = Potion.fromItemStack(e.getItem());
-			if (conf.dispensePotion(b.getNameId())) {
+		ItemStack is = e.getItem();
+		if (is.getType() == Material.POTION) {
+			if (conf.dispensePotion(is.getDurability())) {
 				e.setCancelled(true);
 			}
 		} else {
-			if (conf.dispense(e.getItem().getTypeId())) {
+			if (conf.dispense(is.getTypeId())) {
 				e.setCancelled(true);
 			}
 		}
