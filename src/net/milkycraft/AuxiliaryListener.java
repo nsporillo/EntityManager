@@ -23,6 +23,7 @@ import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import net.milkycraft.config.WorldConfiguration;
 import net.milkycraft.objects.Type;
@@ -157,11 +158,11 @@ public class AuxiliaryListener extends Utility implements Listener {
 				}
 			}
 		} else if (type == SPLASH_POTION) {
-			ItemStack is = p.getItemInHand();
-			Potion b = Potion.fromItemStack(is);
-			if (conf.usagePotion(b.getNameId())) {
-				if (!b(p, "entitymanager.interact.potion_" + b.getNameId())) {
+			ItemStack is = p.getItemInHand();			
+			if (conf.usagePotion(is.getDurability())) {
+				if (!b(p, "entitymanager.interact.potion_" + is.getDurability())) {
 					e.setCancelled(true);
+					Potion b = Potion.fromItemStack(is);
 					al(conf, "Player " + p.getName() + " tried to throw a " + c(b)
 							+ " potion");
 					al(conf, p, "&cYou don't have permission to throw " + c(b)
@@ -273,17 +274,18 @@ public class AuxiliaryListener extends Utility implements Listener {
 					}
 				}
 			} else if (e.getItem().getType() == Material.POTION) {
-				Potion b = Potion.fromItemStack(e.getItem());
-				if (b(pl, "entitymanager.interact.potion." + b.getNameId())) {
+				ItemStack is = e.getItem();				
+				if (b(pl, "entitymanager.interact.potion." + is.getDurability())) {
 					return;
-				}
-				if (c.usagePotion(b.getNameId())) {
+				}			
+				if (c.usagePotion(is.getDurability())) {
 					if (b(e.getClickedBlock())) {
 						e.setUseItemInHand(Result.DENY);
 						return;
 					}
 					e.setUseItemInHand(Result.DENY);
 					e.setCancelled(true);
+					Potion b = Potion.fromItemStack(e.getItem());
 					al(c, "Player " + pl.getName() + " tried to use an " + c(b)
 							+ " potion" + ".");
 					al(c, pl, "&cYou don't have permission to use that &6" + c(b)
