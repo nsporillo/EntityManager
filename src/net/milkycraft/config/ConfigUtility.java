@@ -29,8 +29,7 @@ public class ConfigUtility {
 				if (s.toLowerCase().startsWith("potion")) {
 					String[] args = s.split(":");
 					Integer id = Integer.parseInt(args[1]);
-					Potion p = Potion.fromDamage(id);
-					wc.usageBlock.add(new Item(373, p.getNameId(), true));
+					wc.usageBlock.add(new Item(373, id));
 				} else {
 					wc.plugin.getLogger().severe("Invalid value: " + s);
 					wc.plugin.getLogger().severe("Reference: http://goo.gl/f1Nmb");
@@ -48,8 +47,8 @@ public class ConfigUtility {
 				if (s.toLowerCase().startsWith("potion")) {
 					String[] args = s.split(":");
 					Integer id = Integer.parseInt(args[1]);
-					Potion p = Potion.fromDamage(id);
-					wc.dispBlock.add(new Item(373, p.getNameId(), true));
+
+					wc.dispBlock.add(new Item(373, id));
 				} else {
 					wc.plugin.getLogger().severe("Invalid value: " + s);
 					wc.plugin.getLogger().severe("Reference: http://goo.gl/f1Nmb");
