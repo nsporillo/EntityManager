@@ -1,7 +1,7 @@
 name: EntityManager
 author: milkywayz 
 main: net.milkycraft.EntityManager
-version: 5.4.4
+version: 5.5
 commands:   
     entitymanager:      
       aliases: em      

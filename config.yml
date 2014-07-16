@@ -1,4 +1,4 @@
-# EntityManager Configuration v5.4.4
+# EntityManager Configuration v5.5
 # Blocked items require permission to override 
 # Do NOT change Config_Revision unless you want unexpected errors!
 # Potion blocking - 'Potion:(potionid)' - Can block from dispensers and usage
@@ -21,6 +21,8 @@ Disable:
     Fireworks: false
     Trading: false
     Portal_Creation: false
+    Blocked_Blocks:
+    - Trapped_Chest
   Usage:
     Blocked_Items:
     - Exp_Bottle
@@ -38,12 +40,15 @@ TimeManager:
   Target_Time: 12000
   Set_Every: 100
 EggManager:
+  Disable_All: false
   Disabled_Eggs:
   - ghast
 SpawnManager:
   Remove_Armor: false
+  Disallow_All: false
   Disallowed_Mobs:
   - silverfish
+  - sheep:baby:red
   - zombie:baby:villager
   - Zombie:baby:villager
   Disallowed_Reasons:

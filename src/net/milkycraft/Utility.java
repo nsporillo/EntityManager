@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
 import org.bukkit.event.Listener;
 import org.bukkit.potion.Potion;
+import org.bukkit.util.Vector;
 
 public abstract class Utility {
 
@@ -56,11 +57,19 @@ public abstract class Utility {
 		Location loc = e.getLocation();
 		DyeColor dc = e.getColor();
 		String name = e.getCustomName();
+		int age = e.getAge();
+		int ticks = e.getTicksLived();
+		Vector v = e.getVelocity();
+		boolean sheared = e.isSheared();
 		e.remove();
 		Sheep sheep = (Sheep) loc.getWorld().spawnEntity(loc, EntityType.SHEEP);
 		sheep.setHealth(health);
 		sheep.setColor(dc);
 		sheep.setCustomName(name);
+		sheep.setAge(age);
+		sheep.setTicksLived(ticks);
+		sheep.setVelocity(v);
+		sheep.setSheared(sheared);
 	}
 
 	public boolean b(Block b) {
@@ -116,8 +125,7 @@ public abstract class Utility {
 		try {
 			return manager.getWorld(world);
 		} catch (NullPointerException ex) {
-			manager.getLogger().warning(
-					"No config found for " + world + ", generating one now");
+			manager.getLogger().warning("No config found for " + world + ", generating one now");
 			return manager.load(world);
 		}
 	}
