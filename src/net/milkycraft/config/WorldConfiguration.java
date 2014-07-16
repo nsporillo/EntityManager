@@ -12,20 +12,22 @@ import net.milkycraft.objects.Option;
 import net.milkycraft.objects.Spawnable;
 import net.milkycraft.objects.Type;
 
+import org.bukkit.Color;
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
-import org.bukkit.inventory.ItemStack;
 
 public class WorldConfiguration extends ConfigLoader {
 
 	private final String world;
-	private final double version = 1.6;
-	private boolean[] b = new boolean[21];
+	private final double version = 1.7;
+	private boolean[] b = new boolean[23];
 	private long[] l = new long[2];
 	protected Set<Item> usageBlock = new HashSet<Item>();
 	protected Set<Item> dispBlock = new HashSet<Item>();
 	protected Set<Short> disEggs = new HashSet<Short>();
 	protected Set<Spawnable> disMobs = new HashSet<Spawnable>();
 	protected Set<String> disReasons = new HashSet<String>();
+	protected Set<Item> blockedBlocks = new HashSet<Item>();
 
 	public WorldConfiguration(EntityManager plugin, String world) {
 		super(plugin, world + ".yml");
@@ -54,14 +56,17 @@ public class WorldConfiguration extends ConfigLoader {
 			b[12] = c.getBoolean("Disable.Other.Monster_Spawner_Exp", false);
 			b[13] = c.getBoolean("Disable.Other.Monster_Spawner_Drops", false);
 			b[14] = c.getBoolean("TimeManager.Enabled", false);
-			b[15] = c.getBoolean("DeathManager.Player.Keep_Exp", false);
-			b[16] = c.getBoolean("DeathManager.Entity.Drop_Exp", true);
-			b[17] = c.getBoolean("DeathManager.Entity.Drop_Items", true);
-			b[18] = c.getBoolean("DeathManager.Player.Keep_Items", false);
-			b[19] = c.getBoolean("SpawnManager.Remove_Armor", false);
-			b[20] = c.getBoolean("Disable.Interaction.Portal_Creation", false);
+			b[15] = c.getBoolean("EggManager.Disable_All", false);
+			b[16] = c.getBoolean("SpawnManager.Disallow_All", false);
+			b[17] = c.getBoolean("SpawnManager.Remove_Armor", false);
+			b[18] = c.getBoolean("DeathManager.Player.Keep_Exp", false);
+			b[19] = c.getBoolean("DeathManager.Entity.Drop_Exp", true);
+			b[20] = c.getBoolean("DeathManager.Entity.Drop_Items", true);
+			b[21] = c.getBoolean("DeathManager.Player.Keep_Items", false);
+			b[22] = c.getBoolean("Disable.Interaction.Portal_Creation", false);
 			ConfigUtility.loadBlockedItems(this);
 			ConfigUtility.loadBlockedDispenserItems(this);
+			ConfigUtility.loadBlockedInteractionBlocks(this);
 			ConfigUtility.loadBlockedSpawnEggs(this);
 			ConfigUtility.loadBlockedEntities(this);
 			ConfigUtility.loadBlockedSpawnReasons(this);
@@ -126,9 +131,15 @@ public class WorldConfiguration extends ConfigLoader {
 			super.set("Disable.Interaction.Portal_Creation", false);
 			lg.info("Successfully updated " + fileName + " to 1.6");
 			return false;
+		} else if (rev == 1.6) {
+			super.set("Settings.Config_Revision", 1.7);
+			super.set("EggManager.Disable_All", false);
+			super.set("SpawnManager.Disallow_All", false);
+			lg.info("Successfully updated " + fileName + " to 1.7");
+			return false;
 		} else {
-			lg.warning("Could not update config, mismatched config revision: Local: "
-					+ version + " File: " + rev);
+			lg.warning("Could not update config, mismatched config revision: Local: " + version
+					+ " File: " + rev);
 			return false;
 		}
 	}
@@ -155,9 +166,9 @@ public class WorldConfiguration extends ConfigLoader {
 		return this.disReasons;
 	}
 
-	public boolean has(short id) {
+	public boolean has(EntityType type) {
 		for (Spawnable eme : this.disMobs) {
-			if (eme.getId() == id) {
+			if (eme.getType() == type) {
 				return true;
 			}
 		}
@@ -204,9 +215,9 @@ public class WorldConfiguration extends ConfigLoader {
 		return false;
 	}
 
-	public boolean block(short id, Type type) {
+	public boolean block(EntityType etype, Type type) {
 		for (Spawnable eme : this.disMobs) {
-			if (eme.getId() == id) {
+			if (eme.getType() == etype) {
 				if (eme.getBreed() == type) {
 					return true;
 				}
@@ -215,11 +226,11 @@ public class WorldConfiguration extends ConfigLoader {
 		return false;
 	}
 
-	public boolean block(short id, Type type, byte color) {
+	public boolean block(EntityType etype, Type type, Color color) {
 		for (Spawnable eme : this.disMobs) {
-			if (eme.getId() == id) {
+			if (eme.getType() == etype) {
 				if (eme.getBreed() == type) {
-					if (eme.getColor() == color) {
+					if (eme.getColor() == null || eme.getColor() == color) {
 						return true;
 					}
 				}
@@ -228,10 +239,10 @@ public class WorldConfiguration extends ConfigLoader {
 		return false;
 	}
 
-	public boolean block(short id, byte color) {
+	public boolean block(EntityType etype, Color color) {
 		for (Spawnable eme : this.disMobs) {
-			if (eme.getId() == id) {
-				if (eme.getColor() == color) {
+			if (eme.getType() == etype) {
+				if (eme.getColor() == null || eme.getColor() == color) {
 					return true;
 				}
 			}
