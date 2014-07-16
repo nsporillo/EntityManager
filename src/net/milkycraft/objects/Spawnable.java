@@ -1,38 +1,39 @@
 package net.milkycraft.objects;
 
+import org.bukkit.Color;
 import org.bukkit.entity.EntityType;
 
 public class Spawnable {
 
 	private Meta meta;
-	private short id;
+	private EntityType type;
 
-	public Spawnable(short id, Meta meta) {
-		this.id = id;
+	public Spawnable(EntityType type, Type t, Color color) {
+		this(type, new Meta(t, color));
+	}
+
+	public Spawnable(EntityType type, Type t) {
+		this(type, new Meta(t));
+	}
+
+	public Spawnable(EntityType type, Meta meta) {
+		this.type = type;
 		this.meta = meta;
 	}
 
-	public Spawnable(short id, Type t, byte color) {
-		this(id, new Meta(t, color));
-	}
-
 	public EntityType getType() {
-		return EntityType.fromId(id);
+		return type;
 	}
 
 	public String getName() {
 		return this.getType().toString();
 	}
 
-	public short getId() {
-		return id;
-	}
-
 	public Type getBreed() {
 		return this.meta.getType();
 	}
 
-	public byte getColor() {
+	public Color getColor() {
 		return this.meta.getColor();
 	}
 }
