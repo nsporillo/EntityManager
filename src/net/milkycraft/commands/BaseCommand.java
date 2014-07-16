@@ -28,8 +28,7 @@ public abstract class BaseCommand implements Command {
 		this.plugin = plugin;
 	}
 
-	protected final void addUsage(final String sub1, final String sub2,
-			final String description) {
+	protected final void addUsage(final String sub1, final String sub2, final String description) {
 		final StringBuilder usage = new StringBuilder().append(BLUE).append(
 				String.format("%1$-" + 8 + "s", this.name));
 		if (sub1 != null) {

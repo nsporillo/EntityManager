@@ -26,13 +26,12 @@ public class TimeManager extends Utility {
 
 	private void start(String name, final long target, long every) {
 		final World world = Bukkit.getWorld(name);
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(super.getHandle(),
-				new Runnable() {
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(super.getHandle(), new Runnable() {
 
-					@Override
-					public void run() {
-						world.setTime(target);
-					}
-				}, every, every);
+			@Override
+			public void run() {
+				world.setTime(target);
+			}
+		}, every, every);
 	}
 }
