@@ -12,14 +12,11 @@ import static net.milkycraft.objects.Option.THUNDER;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
-
 import net.milkycraft.config.WorldConfiguration;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.EnderPearl;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -41,7 +38,7 @@ import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.Potion;
-import org.bukkit.potion.PotionEffect;
+import org.bukkit.projectiles.ProjectileSource;
 
 public class PrimaryListener extends Utility implements Listener {
 
@@ -75,7 +72,7 @@ public class PrimaryListener extends Utility implements Listener {
 				e.setCancelled(a(conf, ag, attacked.getName()));
 			} else if (e.getDamager() instanceof Projectile
 					&& !(e.getDamager() instanceof EnderPearl)) {
-				Entity a = ((Projectile) e.getDamager()).getShooter();
+				ProjectileSource a = ((Projectile) e.getDamager()).getShooter();
 				if (a instanceof Player) {
 					Player p = (Player) a;
 					e.setCancelled(a(conf, p, attacked.getName()));
@@ -146,10 +143,10 @@ public class PrimaryListener extends Utility implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	public void onPotionSplash(PotionSplashEvent e) {		
+	public void onPotionSplash(PotionSplashEvent e) {
 		if (e.getEntity().getShooter() instanceof Player) {
 			Player p = (Player) e.getEntity().getShooter();
-			ItemStack is = e.getPotion().getItem();			
+			ItemStack is = e.getPotion().getItem();
 			if (b(p, "entitymanager.interact.potion." + is.getDurability())) {
 				return;
 			}
@@ -157,10 +154,8 @@ public class PrimaryListener extends Utility implements Listener {
 			if (conf.usagePotion(is.getDurability())) {
 				e.setCancelled(true);
 				Potion b = Potion.fromItemStack(e.getPotion().getItem());
-				al(conf, "Player " + p.getName() + " tried to use an " + c(b) + " potion"
-						+ ".");
-				al(conf, p, "&cYou don't have permission to use that &6" + c(b)
-						+ " potion" + "&c.");
+				al(conf, "Player " + p.getName() + " tried to use an " + c(b) + " potion" + ".");
+				al(conf, p, "&cYou don't have permission to use that &6" + c(b) + " potion" + "&c.");
 			}
 			return;
 		}
