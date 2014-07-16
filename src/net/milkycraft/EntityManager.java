@@ -21,10 +21,18 @@ public class EntityManager extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		this.load();
-		new TimeManager(this);
 		pl = new PrimaryListener(this);
 		al = new AuxiliaryListener(this);
+		Bukkit.getScheduler().runTask(this, new Runnable() {
+
+			@Override
+			public void run() {
+				EntityManager.this.load();
+				new TimeManager(EntityManager.this);
+				getLogger().info(configs.size() + " worlds loaded");
+			}
+
+		});
 	}
 
 	@Override
