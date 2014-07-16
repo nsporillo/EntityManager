@@ -1,13 +1,6 @@
 package net.milkycraft;
 
-import static net.milkycraft.objects.Option.EDEATHDROPS;
-import static net.milkycraft.objects.Option.EDEATHEXP;
-import static net.milkycraft.objects.Option.FIREWORKS;
-import static net.milkycraft.objects.Option.FISHING;
-import static net.milkycraft.objects.Option.NODROPS;
-import static net.milkycraft.objects.Option.NOEXP;
-import static net.milkycraft.objects.Option.NOMOBARMOR;
-import static net.milkycraft.objects.Option.TRADING;
+import static net.milkycraft.objects.Option.*;
 import static net.milkycraft.objects.Type.ALL;
 import static net.milkycraft.objects.Type.BABY;
 import static net.milkycraft.objects.Type.BOTH;
@@ -23,7 +16,6 @@ import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import net.milkycraft.config.WorldConfiguration;
 import net.milkycraft.objects.Type;
@@ -34,6 +26,7 @@ import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Zombie;
@@ -61,47 +54,47 @@ public class AuxiliaryListener extends Utility implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onSpawn(CreatureSpawnEvent e) {
-		WorldConfiguration conf = a(e.getEntity());
-		if (conf.getSet5().contains(e.getSpawnReason().toString())) {
+		LivingEntity en = e.getEntity();
+		WorldConfiguration conf = a(en);
+		if (conf.get(SDISABLE) || conf.getSet5().contains(e.getSpawnReason().toString())) {
 			e.setCancelled(true);
 			return;
 		}
-		short id = e.getEntityType().getTypeId();
-		if (conf.has(id)) {
-			if (e.getEntity() instanceof Ageable) {
-				if (e.getEntity() instanceof Sheep) {
-					Sheep sheep = (Sheep) e.getEntity();
-					byte color = sheep.getColor().getWoolData();
+		EntityType type = e.getEntityType();
+		if (conf.has(type)) {
+			if (en instanceof Ageable) {
+				if (en instanceof Sheep) {
+					Sheep sheep = (Sheep) en;
 					if (!sheep.isAdult()) {
-						if (conf.block(id, BABY, color)) {
+						if (conf.block(type, BABY, sheep.getColor().getColor())) {
 							e.setCancelled(true);
 						}
 						return;
 					}
-					if (conf.block(id, ALL, color)) {
+					if (conf.block(type, ALL, sheep.getColor().getColor())) {
 						e.setCancelled(true);
 					}
 					return;
 				}
-				Ageable a = (Ageable) e.getEntity();
+				Ageable a = (Ageable) en;
 				if (!a.isAdult()) {
-					if (conf.block(id, BABY)) {
+					if (conf.block(type, BABY)) {
 						e.setCancelled(true);
 					}
 				}
 				return;
-			} else if (e.getEntity() instanceof Zombie) {
-				Zombie z = (Zombie) e.getEntity();
+			} else if (en instanceof Zombie) {
+				Zombie z = (Zombie) en;
 				if (z.isBaby() && !z.isVillager()) {
-					if (conf.block(id, BABY)) {
+					if (conf.block(type, BABY)) {
 						e.setCancelled(true);
 					}
 				} else if (z.isVillager() && !z.isBaby()) {
-					if (conf.block(id, Type.VILLAGER)) {
+					if (conf.block(type, Type.VILLAGER)) {
 						e.setCancelled(true);
 					}
 				} else if (z.isBaby() || z.isVillager()) {
-					if (conf.block(id, BOTH)) {
+					if (conf.block(type, BOTH)) {
 						e.setCancelled(true);
 					}
 				}
@@ -112,8 +105,8 @@ public class AuxiliaryListener extends Utility implements Listener {
 			mobs.add(e.getEntity());
 		}
 		if (conf.get(NOMOBARMOR)) {
-			e.getEntity().getEquipment().setArmorContents(null);
-			e.getEntity().getEquipment().getItemInHand().setTypeId(0);
+			en.getEquipment().setArmorContents(null);
+			en.getEquipment().getItemInHand().setType(Material.AIR);
 		}
 	}
 
@@ -158,15 +151,13 @@ public class AuxiliaryListener extends Utility implements Listener {
 				}
 			}
 		} else if (type == SPLASH_POTION) {
-			ItemStack is = p.getItemInHand();			
+			ItemStack is = p.getItemInHand();
 			if (conf.usagePotion(is.getDurability())) {
 				if (!b(p, "entitymanager.interact.potion_" + is.getDurability())) {
 					e.setCancelled(true);
 					Potion b = Potion.fromItemStack(is);
-					al(conf, "Player " + p.getName() + " tried to throw a " + c(b)
-							+ " potion");
-					al(conf, p, "&cYou don't have permission to throw " + c(b)
-							+ " potions.");
+					al(conf, "Player " + p.getName() + " tried to throw a " + c(b) + " potion");
+					al(conf, p, "&cYou don't have permission to throw " + c(b) + " potions.");
 				}
 			}
 		} else if (type == FISHING_HOOK) {
@@ -201,9 +192,10 @@ public class AuxiliaryListener extends Utility implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onTrade(PlayerInteractEntityEvent e) {
+		Player pl = e.getPlayer();
 		if (e.getRightClicked() instanceof org.bukkit.entity.Villager) {
-			Player pl = e.getPlayer();
-			WorldConfiguration conf = get(pl.getWorld().getName());
+
+			WorldConfiguration conf = a(e.getRightClicked());
 			if (conf.get(TRADING) && !b(pl, p[0])) {
 				e.setCancelled(true);
 				al(conf, "Player " + pl.getName() + " tried to trade ");
@@ -211,32 +203,46 @@ public class AuxiliaryListener extends Utility implements Listener {
 			}
 		} else if (e.getRightClicked() instanceof Sheep) {
 			WorldConfiguration conf = a(e.getRightClicked());
-			short et = e.getRightClicked().getType().getTypeId();
+			EntityType type = e.getRightClicked().getType();
 			Player p = e.getPlayer();
 			ItemStack is = p.getItemInHand();
-			if (conf.has(et) && is.getTypeId() == 351) {
+			if (conf.has(type) && is.getType() == Material.INK_SACK) {
+				@SuppressWarnings("deprecation")
 				DyeColor dc = DyeColor.getByDyeData((byte) is.getDurability());
+				String c = dc.toString().toLowerCase();
 				Sheep sheep = (Sheep) e.getRightClicked();
 				if (!sheep.isAdult()) {
-					if (conf.block(et, BABY, dc.getWoolData())) {
+					if (conf.block(type, BABY, dc.getColor()) && !pl.isOp()) {
 						e.setCancelled(true);
-						al(conf, p, "&cThat color of sheep is blocked");
-						al(conf, "Player " + p.getName() + " tried to dye a sheep "
-								+ dc.toString().toLowerCase());
+						al(conf, p, "&cThat color of sheep is blocked (" + c + ")");
+						al(conf, "Player " + p.getName() + " tried to dye a sheep " + c);
 						update(sheep);
 						return;
 					}
 					return;
 				}
-				if (conf.block(et, ALL, dc.getWoolData())) {
+				if (conf.block(type, ALL, dc.getColor()) && !pl.isOp()) {
 					e.setCancelled(true);
-					al(conf, p, "&cThat color of sheep is blocked");
-					al(conf, "Player " + p.getName() + " tried to dye a sheep "
-							+ dc.toString().toLowerCase());
+					al(conf, p, "&cThat color of sheep is blocked (" + c + ")");
+					al(conf, "Player " + p.getName() + " tried to dye a sheep " + c);
 					update(sheep);
 				}
 				return;
 			}
+		}
+	}
+
+	public void a(Player pl, String str, PlayerInteractEvent e, WorldConfiguration c) {
+		if (!b(pl, "entitymanager.spawn." + str)) {
+			if (b(e.getClickedBlock())) {
+				e.setUseItemInHand(Result.DENY);
+				e.setCancelled(true);
+				return;
+			}
+			e.setUseItemInHand(Result.DENY);
+			e.setCancelled(true);
+			al(c, "Player " + pl.getName() + " tried to spawn a " + str);
+			al(c, pl, "&cYou don't have permission to spawn " + str + "s.");
 		}
 	}
 
@@ -260,24 +266,19 @@ public class AuxiliaryListener extends Utility implements Listener {
 					al(c, pl, "&cYou don't have permission to use fireworks.");
 				}
 			} else if (e.getItem().getType().equals(Material.MONSTER_EGG)) {
-				EntityType type = fromId(e.getItem().getDurability());
-				if (c.getSet3().contains(type.getTypeId())) {
-					if (!b(pl, "entitymanager.spawn." + str)) {
-						if (b(e.getClickedBlock())) {
-							e.setUseItemInHand(Result.DENY);
-							return;
-						}
-						e.setUseItemInHand(Result.DENY);
-						e.setCancelled(true);
-						al(c, "Player " + pl.getName() + " tried to spawn a " + str);
-						al(c, pl, "&cYou don't have permission to spawn " + str + "s.");
+				if (c.get(EDISABLE)) {
+					a(pl, str, e, c);
+				} else {
+					EntityType type = fromId(e.getItem().getDurability());
+					if (c.getSet3().contains(type.getTypeId())) {
+						a(pl, str, e, c);
 					}
 				}
 			} else if (e.getItem().getType() == Material.POTION) {
-				ItemStack is = e.getItem();				
+				ItemStack is = e.getItem();
 				if (b(pl, "entitymanager.interact.potion." + is.getDurability())) {
 					return;
-				}			
+				}
 				if (c.usagePotion(is.getDurability())) {
 					if (b(e.getClickedBlock())) {
 						e.setUseItemInHand(Result.DENY);
@@ -286,10 +287,9 @@ public class AuxiliaryListener extends Utility implements Listener {
 					e.setUseItemInHand(Result.DENY);
 					e.setCancelled(true);
 					Potion b = Potion.fromItemStack(e.getItem());
-					al(c, "Player " + pl.getName() + " tried to use an " + c(b)
-							+ " potion" + ".");
-					al(c, pl, "&cYou don't have permission to use that &6" + c(b)
-							+ " potion" + "&c.");
+					al(c, "Player " + pl.getName() + " tried to use an " + c(b) + " potion" + ".");
+					al(c, pl, "&cYou don't have permission to use that &6" + c(b) + " potion"
+							+ "&c.");
 				}
 				return;
 			} else {
@@ -303,8 +303,7 @@ public class AuxiliaryListener extends Utility implements Listener {
 						e.setUseItemInHand(Result.DENY);
 						e.setCancelled(true);
 						al(c, "Player " + pl.getName() + " tried to use an " + item + ".");
-						al(c, pl, "&cYou don't have permission to use that &6" + item
-								+ "&c.");
+						al(c, pl, "&cYou don't have permission to use that &6" + item + "&c.");
 					}
 				}
 			}
