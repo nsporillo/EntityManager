@@ -19,7 +19,16 @@ import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 
 public class ConfigUtility {
 
-	protected static void loadBlockedItems(WorldConfiguration wc) {
+	public static void load(WorldConfiguration wc) {
+		ConfigUtility.loadBlockedItems(wc);
+		ConfigUtility.loadBlockedDispenserItems(wc);
+		ConfigUtility.loadBlockedInteractionBlocks(wc);
+		ConfigUtility.loadBlockedSpawnEggs(wc);
+		ConfigUtility.loadBlockedEntities(wc);
+		ConfigUtility.loadBlockedSpawnReasons(wc);
+	}
+	
+	private static void loadBlockedItems(WorldConfiguration wc) {
 		for (String s : wc.c.getStringList("Disable.Usage.Blocked_Items")) {
 			try {
 				Material mat = Material.valueOf(s.toUpperCase());
@@ -27,36 +36,39 @@ public class ConfigUtility {
 			} catch (Exception ex) {
 				if (s.toLowerCase().startsWith("potion")) {
 					String[] args = s.split(":");
-					Integer id = Integer.parseInt(args[1]);
-					wc.usageBlock.add(new Item(373, id));
+					try {
+						Integer id = Integer.parseInt(args[1]);
+						wc.usageBlock.add(new Item(373, id));
+					} catch (Exception ex2) {
+						wc.getLog().severe("Invalid value: " + s);
+						wc.getLog().severe("Potion format=> \"potion:#\"");
+					}
 				} else {
-					wc.plugin.getLogger().severe("Invalid value: " + s);
-					wc.plugin.getLogger().severe("Reference: http://goo.gl/f1Nmb");
+					wc.getLog().severe("Invalid value: " + s);
+					wc.getLog().severe("Reference: http://goo.gl/f1Nmb");
 				}
 			}
 		}
 	}
 
-	protected static void loadBlockedInteractionBlocks(WorldConfiguration wc) {
+	private static void loadBlockedInteractionBlocks(WorldConfiguration wc) {
 		for (String s : wc.c.getStringList("Disable.Interaction.Blocked_Blocks")) {
 			try {
 				Material mat = Material.valueOf(s.toUpperCase());
 				if (mat.isBlock()) {
 					wc.blockedBlocks.add(new Item(mat.getId()));
 				} else {
-					wc.plugin.getLogger().severe(
-							"Material: " + mat.toString()
-									+ " is not a block, cannot block interaction with it");
+					wc.getLog().severe("Material: " + mat.toString() + " is not a block!");
 				}
 			} catch (Exception ex) {
-				wc.plugin.getLogger().severe("Invalid value: " + s);
-				wc.plugin.getLogger().severe("Reference: http://goo.gl/f1Nmb");
+				wc.getLog().severe("Invalid value: " + s);
+				wc.getLog().severe("Reference: http://goo.gl/f1Nmb");
 
 			}
 		}
 	}
 
-	protected static void loadBlockedDispenserItems(WorldConfiguration wc) {
+	private static void loadBlockedDispenserItems(WorldConfiguration wc) {
 		for (String s : wc.c.getStringList("Disable.Dispensing.Blocked_Items")) {
 			try {
 				Material mat = Material.valueOf(s.toUpperCase());
@@ -68,25 +80,25 @@ public class ConfigUtility {
 
 					wc.dispBlock.add(new Item(373, id));
 				} else {
-					wc.plugin.getLogger().severe("Invalid value: " + s);
-					wc.plugin.getLogger().severe("Reference: http://goo.gl/f1Nmb");
+					wc.getLog().severe("Invalid value: " + s);
+					wc.getLog().severe("Reference: http://goo.gl/f1Nmb");
 				}
 			}
 		}
 	}
 
-	protected static void loadBlockedSpawnEggs(WorldConfiguration wc) {
+	private static void loadBlockedSpawnEggs(WorldConfiguration wc) {
 		for (String s : wc.c.getStringList("EggManager.Disabled_Eggs")) {
 			try {
 				wc.disEggs.add(EntityType.valueOf(s.toUpperCase()).getTypeId());
 			} catch (Exception ex) {
-				wc.plugin.getLogger().severe("Invalid value: " + s);
-				wc.plugin.getLogger().severe("Reference: http://goo.gl/E7mVB");
+				wc.getLog().severe("Invalid value: " + s);
+				wc.getLog().severe("Reference: http://goo.gl/E7mVB");
 			}
 		}
 	}
 
-	protected static void loadBlockedEntities(WorldConfiguration wc) {
+	private static void loadBlockedEntities(WorldConfiguration wc) {
 		Set<Spawnable> l = wc.disMobs;
 		for (String s : wc.c.getStringList("SpawnManager.Disallowed_Mobs")) {
 			try {
@@ -122,22 +134,22 @@ public class ConfigUtility {
 					}
 				}
 			} catch (IllegalArgumentException ex) {
-				wc.plugin.getLogger().severe("Invalid value: " + s);
-				wc.plugin.getLogger().severe("Reference: http://goo.gl/E7mVB");
+				wc.getLog().severe("Invalid value: " + s);
+				wc.getLog().severe("Reference: http://goo.gl/E7mVB");
 			} catch (Exception ex) {
-				wc.plugin.getLogger().severe("Severe unhandled error occured");
+				wc.getLog().severe("Unhandled error occured loading disallowed mobs!");
 				ex.printStackTrace();
 			}
 		}
 	}
 
-	protected static void loadBlockedSpawnReasons(WorldConfiguration wc) {
+	private static void loadBlockedSpawnReasons(WorldConfiguration wc) {
 		for (String s : wc.c.getStringList("SpawnManager.Disallowed_Reasons")) {
 			try {
 				wc.disReasons.add(SpawnReason.valueOf(s.toUpperCase()).toString());
 			} catch (Exception ex) {
-				wc.plugin.getLogger().severe("Invalid value: " + s);
-				wc.plugin.getLogger().severe("Reference: http://goo.gl/a4XRB");
+				wc.getLog().severe("Invalid value: " + s);
+				wc.getLog().severe("Reference: http://goo.gl/a4XRB");
 			}
 		}
 	}
