@@ -232,7 +232,7 @@ public class AuxiliaryListener extends Utility implements Listener {
 		}
 	}
 
-	public void a(Player pl, String str, PlayerInteractEvent e, WorldConfiguration c) {
+	private void a(Player pl, String str, PlayerInteractEvent e, WorldConfiguration c) {
 		if (!b(pl, "entitymanager.spawn." + str)) {
 			if (b(e.getClickedBlock())) {
 				e.setUseItemInHand(Result.DENY);
