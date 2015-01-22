@@ -66,37 +66,30 @@ public class AuxiliaryListener extends Utility implements Listener {
 				if (en instanceof Sheep) {
 					Sheep sheep = (Sheep) en;
 					if (!sheep.isAdult()) {
-						if (conf.block(type, BABY, sheep.getColor().getColor())) {
+						if (conf.block(type, BABY, sheep.getColor().getColor()))
 							e.setCancelled(true);
-						}
 						return;
 					}
-					if (conf.block(type, ALL, sheep.getColor().getColor())) {
+					if (conf.block(type, ALL, sheep.getColor().getColor()))
 						e.setCancelled(true);
-					}
 					return;
 				}
 				Ageable a = (Ageable) en;
-				if (!a.isAdult()) {
-					if (conf.block(type, BABY)) {
+				if (!a.isAdult())
+					if (conf.block(type, BABY))
 						e.setCancelled(true);
-					}
-				}
 				return;
 			} else if (en instanceof Zombie) {
 				Zombie z = (Zombie) en;
 				if (z.isBaby() && !z.isVillager()) {
-					if (conf.block(type, BABY)) {
+					if (conf.block(type, BABY))
 						e.setCancelled(true);
-					}
 				} else if (z.isVillager() && !z.isBaby()) {
-					if (conf.block(type, Type.VILLAGER)) {
+					if (conf.block(type, Type.VILLAGER))
 						e.setCancelled(true);
-					}
 				} else if (z.isBaby() || z.isVillager()) {
-					if (conf.block(type, BOTH)) {
+					if (conf.block(type, BOTH))
 						e.setCancelled(true);
-					}
 				}
 				return;
 			}
@@ -174,19 +167,16 @@ public class AuxiliaryListener extends Utility implements Listener {
 		if (e.getEntity() instanceof Creature) {
 			WorldConfiguration conf = a(e.getEntity());
 			if (mobs.contains(e.getEntity())) {
-				if (conf.get(NOEXP)) {
+				if (conf.get(NOEXP))
 					e.setDroppedExp(0);
-				} else if (conf.get(NODROPS)) {
+				else if (conf.get(NODROPS))
 					e.getDrops().clear();
-				}
 				mobs.remove(e.getEntity());
 			}
-			if (!conf.get(EDEATHEXP)) {
+			if (!conf.get(EDEATHEXP))
 				e.setDroppedExp(0);
-			}
-			if (!conf.get(EDEATHDROPS)) {
+			if (!conf.get(EDEATHDROPS))
 				e.getDrops().clear();
-			}
 		}
 	}
 
@@ -194,7 +184,6 @@ public class AuxiliaryListener extends Utility implements Listener {
 	public void onTrade(PlayerInteractEntityEvent e) {
 		Player pl = e.getPlayer();
 		if (e.getRightClicked() instanceof org.bukkit.entity.Villager) {
-
 			WorldConfiguration conf = a(e.getRightClicked());
 			if (conf.get(TRADING) && !b(pl, p[0])) {
 				e.setCancelled(true);
@@ -266,19 +255,17 @@ public class AuxiliaryListener extends Utility implements Listener {
 					al(c, pl, "&cYou don't have permission to use fireworks.");
 				}
 			} else if (e.getItem().getType().equals(Material.MONSTER_EGG)) {
-				if (c.get(EDISABLE)) {
+				if (c.get(EDISABLE))
 					a(pl, str, e, c);
-				} else {
+				else {
 					EntityType type = fromId(e.getItem().getDurability());
-					if (c.getSet3().contains(type.getTypeId())) {
+					if (c.getSet3().contains(type.getTypeId()))
 						a(pl, str, e, c);
-					}
 				}
 			} else if (e.getItem().getType() == Material.POTION) {
 				ItemStack is = e.getItem();
-				if (b(pl, "entitymanager.interact.potion." + is.getDurability())) {
+				if (b(pl, super.p[7] + is.getDurability()))
 					return;
-				}
 				if (c.usagePotion(is.getDurability())) {
 					if (b(e.getClickedBlock())) {
 						e.setUseItemInHand(Result.DENY);

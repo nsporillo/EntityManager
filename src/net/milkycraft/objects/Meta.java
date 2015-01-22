@@ -21,9 +21,8 @@ public class Meta {
 	}
 
 	public Color getColor() {
-		if (this.color == null) {
+		if (this.color == null)
 			return null;
-		}
 		return this.color;
 	}
 }

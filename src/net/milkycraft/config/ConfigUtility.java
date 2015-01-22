@@ -27,7 +27,7 @@ public class ConfigUtility {
 		ConfigUtility.loadBlockedEntities(wc);
 		ConfigUtility.loadBlockedSpawnReasons(wc);
 	}
-	
+
 	private static void loadBlockedItems(WorldConfiguration wc) {
 		for (String s : wc.c.getStringList("Disable.Usage.Blocked_Items")) {
 			try {
@@ -55,11 +55,11 @@ public class ConfigUtility {
 		for (String s : wc.c.getStringList("Disable.Interaction.Blocked_Blocks")) {
 			try {
 				Material mat = Material.valueOf(s.toUpperCase());
-				if (mat.isBlock()) {
+				if (mat.isBlock())
 					wc.blockedBlocks.add(new Item(mat.getId()));
-				} else {
+				else
 					wc.getLog().severe("Material: " + mat.toString() + " is not a block!");
-				}
+
 			} catch (Exception ex) {
 				wc.getLog().severe("Invalid value: " + s);
 				wc.getLog().severe("Reference: http://goo.gl/f1Nmb");
@@ -77,8 +77,7 @@ public class ConfigUtility {
 				if (s.toLowerCase().startsWith("potion")) {
 					String[] args = s.split(":");
 					Integer id = Integer.parseInt(args[1]);
-
-					wc.dispBlock.add(new Item(373, id));
+					wc.dispBlock.add(new Item(373, id.intValue()));
 				} else {
 					wc.getLog().severe("Invalid value: " + s);
 					wc.getLog().severe("Reference: http://goo.gl/f1Nmb");

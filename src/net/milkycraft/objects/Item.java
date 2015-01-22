@@ -9,7 +9,7 @@ public class Item {
 		this.id = id;
 		this.dura = dura;
 	}
-	
+
 	public Item(int id) {
 		this(id, 0);
 	}

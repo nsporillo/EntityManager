@@ -147,9 +147,8 @@ public class PrimaryListener extends Utility implements Listener {
 		if (e.getEntity().getShooter() instanceof Player) {
 			Player p = (Player) e.getEntity().getShooter();
 			ItemStack is = e.getPotion().getItem();
-			if (b(p, "entitymanager.interact.potion." + is.getDurability())) {
+			if (b(p, super.p[7] + is.getDurability()))
 				return;
-			}
 			WorldConfiguration conf = a(p.getWorld());
 			if (conf.usagePotion(is.getDurability())) {
 				e.setCancelled(true);
@@ -185,11 +184,9 @@ public class PrimaryListener extends Utility implements Listener {
 					WorldConfiguration wc = a(p.getWorld());
 					al(wc, "Player " + p.getName() + " respawned with their items");
 					al(wc, p, "&6Your items were returned after death!");
-					for (ItemStack is : drops.get(p.getName())) {
-						if (is != null) {
+					for (ItemStack is : drops.get(p.getName()))
+						if (is != null)
 							p.getInventory().addItem(is);
-						}
-					}
 					drops.remove(p.getName());
 				}
 			}, 10L);
@@ -201,13 +198,11 @@ public class PrimaryListener extends Utility implements Listener {
 		WorldConfiguration conf = a(e.getBlock().getWorld());
 		ItemStack is = e.getItem();
 		if (is.getType() == Material.POTION) {
-			if (conf.dispensePotion(is.getDurability())) {
+			if (conf.dispensePotion(is.getDurability()))
 				e.setCancelled(true);
-			}
 		} else {
-			if (conf.dispense(is.getTypeId())) {
+			if (conf.dispense(is.getTypeId()))
 				e.setCancelled(true);
-			}
 		}
 	}
 }

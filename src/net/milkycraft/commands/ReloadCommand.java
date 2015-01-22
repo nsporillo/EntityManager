@@ -26,17 +26,14 @@ public class ReloadCommand extends BaseCommand {
 			return;
 		}
 		if (args.size() == 0) {
-			for (WorldConfiguration c : plugin.getWorlds()) {
+			for (WorldConfiguration c : plugin.getWorlds())
 				reloadWorld(s, c);
-			}
+
 			s.sendMessage(BLUE + "Reloaded all world configs!");
-		} else {
-			for (WorldConfiguration c : plugin.getWorlds()) {
-				if (c.getWorld().equalsIgnoreCase(args.get(0))) {
+		} else
+			for (WorldConfiguration c : plugin.getWorlds())
+				if (c.getWorld().equalsIgnoreCase(args.get(0)))
 					reloadWorld(s, c);
-				}
-			}
-		}
 	}
 
 	private void reloadWorld(CommandSender s, WorldConfiguration c) {

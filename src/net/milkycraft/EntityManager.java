@@ -33,7 +33,6 @@ public class EntityManager extends JavaPlugin {
 			}
 
 		});
-	
 	}
 
 	@Override
@@ -44,9 +43,9 @@ public class EntityManager extends JavaPlugin {
 
 	public void load() {
 		configs = new ArrayList<WorldConfiguration>();
-		for (World w : Bukkit.getWorlds()) {
+		for (World w : Bukkit.getWorlds())
 			load(w.getName());
-		}
+
 	}
 
 	public WorldConfiguration load(String w) {
@@ -56,11 +55,9 @@ public class EntityManager extends JavaPlugin {
 	}
 
 	public WorldConfiguration getWorld(String world) {
-		for (WorldConfiguration wc : this.configs) {
-			if (wc.getWorld().equals(world)) {
+		for (WorldConfiguration wc : this.configs)
+			if (wc.getWorld().equals(world))
 				return wc;
-			}
-		}
 		throw new NullPointerException();
 	}
 

@@ -10,10 +10,6 @@ public class TimeManager extends Utility {
 
 	public TimeManager(EntityManager manager) {
 		super(manager);
-		this.init();
-	}
-
-	private void init() {
 		for (WorldConfiguration conf : super.getHandle().getWorlds()) {
 			if (conf.get(Option.TIME)) {
 				String m = conf.getWorld();

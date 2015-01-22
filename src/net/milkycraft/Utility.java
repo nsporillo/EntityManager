@@ -25,7 +25,7 @@ public abstract class Utility {
 	public String[] p = { "entitymanager.interact.trade", "entitymanager.interact.shoot",
 			"entitymanager.interact.enchant", "entitymanager.interact.anvil",
 			"entitymanager.death.keepexp", "entitymanager.death.keepitems",
-			"entitymanager.create.portal" };
+			"entitymanager.create.portal", "entitymanager.interact.potion" };
 
 	public Utility(EntityManager manager) {
 		this.manager = manager;
@@ -73,14 +73,11 @@ public abstract class Utility {
 	}
 
 	public boolean b(Block b) {
-		if (b == null) {
+		if (b == null)
 			return false;
-		}
-		for (int i : ids) {
-			if (b.getTypeId() == i) {
+		for (int i : ids)
+			if (b.getTypeId() == i)
 				return true;
-			}
-		}
 		return false;
 	}
 
@@ -94,27 +91,22 @@ public abstract class Utility {
 	}
 
 	public void al(WorldConfiguration conf, String adminMsg) {
-		if (conf.get(Option.ADMIN_ALERTS)) {
+		if (conf.get(Option.ADMIN_ALERTS))
 			adA(adminMsg, conf.getWorld());
-		}
-		if (conf.get(Option.LOGGING)) {
+		if (conf.get(Option.LOGGING))
 			manager.getLogger().info(adminMsg);
-		}
 	}
 
 	public static void al(WorldConfiguration conf, Player player, String message) {
-		if (conf.get(Option.PLAYER_ALERTS)) {
+		if (conf.get(Option.PLAYER_ALERTS))
 			player.sendMessage(translateAlternateColorCodes('&', message));
-		}
 	}
 
 	private static void adA(String message, String world) {
 		String msg = "&2[&4Alert&2] [&6" + world + "&2] &c" + message;
-		for (Player p : Bukkit.getOnlinePlayers()) {
-			if (p.hasPermission("entitymanager.admin.alert")) {
+		for (Player p : Bukkit.getOnlinePlayers())
+			if (p.hasPermission("entitymanager.admin.alert"))
 				p.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
-			}
-		}
 	}
 
 	public EntityManager getHandle() {

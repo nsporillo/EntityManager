@@ -81,10 +81,9 @@ public class WorldConfiguration extends ConfigLoader {
 	}
 
 	private boolean performUpdate(double rev) {
-		Logger lg = plugin.getLogger();
-		if (this.REV == rev) {
+		if (this.REV == rev)
 			return true;
-		}
+
 		if (rev == 0.1) {
 			super.set("Settings.Config_Revision", 1.0);
 			super.set("Disable.Usage.Potions", false);
@@ -131,10 +130,10 @@ public class WorldConfiguration extends ConfigLoader {
 			super.set("Settings.Config_Revision", 1.7);
 			super.set("EggManager.Disable_All", false);
 			super.set("SpawnManager.Disallow_All", false);
-			lg.info("Successfully updated " + fileName + " to 1.7");
+			plugin.getLogger().info("Successfully updated " + fileName + " to 1.7");
 			return false;
 		} else {
-			lg.warning("Config update failed, unknown version {L:" + REV + "..." + rev + "?}");
+			plugin.getLogger().warning("Config update failed, check version (" + rev + ")");
 			return true;
 		}
 	}
@@ -162,86 +161,69 @@ public class WorldConfiguration extends ConfigLoader {
 	}
 
 	public boolean has(EntityType type) {
-		for (Spawnable eme : this.disMobs) {
-			if (eme.getType() == type) {
+		for (Spawnable eme : this.disMobs)
+			if (eme.getType() == type)
 				return true;
-			}
-		}
 		return false;
 	}
 
 	public boolean usage(int id) {
-		for (Item i : this.usageBlock) {
-			if (i.getId() == id) {
+		for (Item i : this.usageBlock)
+			if (i.getId() == id)
 				return true;
-			}
-		}
 		return false;
 	}
 
 	public boolean usagePotion(int pot) {
-		for (Item i : this.usageBlock) {
-			if (i.getId() == 373) {
-				if (i.getDurability() == pot) {
+		for (Item i : this.usageBlock)
+			if (i.getId() == 373)
+				if (i.getDurability() == pot)
 					return true;
-				}
-			}
-		}
 		return false;
 	}
 
 	public boolean dispensePotion(int pot) {
-		for (Item i : this.dispBlock) {
-			if (i.getId() == 373) {
-				if (i.getDurability() == pot) {
+		for (Item i : this.dispBlock)
+			if (i.getId() == 373)
+				if (i.getDurability() == pot)
 					return true;
-				}
-			}
-		}
+
 		return false;
 	}
 
 	public boolean dispense(int id) {
-		for (Item i : this.dispBlock) {
-			if (i.getId() == id) {
+		for (Item i : this.dispBlock)
+			if (i.getId() == id)
 				return true;
-			}
-		}
+
 		return false;
 	}
 
 	public boolean block(EntityType etype, Type type) {
-		for (Spawnable eme : this.disMobs) {
-			if (eme.getType() == etype) {
-				if (eme.getBreed() == type) {
+		for (Spawnable eme : this.disMobs)
+			if (eme.getType() == etype)
+				if (eme.getBreed() == type)
 					return true;
-				}
-			}
-		}
+
 		return false;
 	}
 
 	public boolean block(EntityType etype, Type type, Color color) {
-		for (Spawnable eme : this.disMobs) {
-			if (eme.getType() == etype) {
-				if (eme.getBreed() == type) {
-					if (eme.getColor() == null || eme.getColor() == color) {
+		for (Spawnable eme : this.disMobs)
+			if (eme.getType() == etype)
+				if (eme.getBreed() == type)
+					if (eme.getColor() == null || eme.getColor() == color)
 						return true;
-					}
-				}
-			}
-		}
+
 		return false;
 	}
 
 	public boolean block(EntityType etype, Color color) {
-		for (Spawnable eme : this.disMobs) {
-			if (eme.getType() == etype) {
-				if (eme.getColor() == null || eme.getColor() == color) {
+		for (Spawnable eme : this.disMobs)
+			if (eme.getType() == etype)
+				if (eme.getColor() == null || eme.getColor() == color)
 					return true;
-				}
-			}
-		}
+
 		return false;
 	}
 
