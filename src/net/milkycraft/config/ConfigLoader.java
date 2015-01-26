@@ -6,19 +6,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import net.milkycraft.EntityManager;
-
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
 
 public abstract class ConfigLoader {
 
 	protected FileConfiguration c;
-	protected File configFile;
 	protected String fileName;
-	protected EntityManager plugin;
+	protected Plugin plugin;
+	protected File configFile;
 
-	public ConfigLoader(EntityManager plugin, String fileName) {
+	public ConfigLoader(Plugin plugin, String fileName) {
 		this.plugin = plugin;
 		this.fileName = fileName;
 		File dataFolder = plugin.getDataFolder();
@@ -53,6 +52,7 @@ public abstract class ConfigLoader {
 	}
 
 	protected abstract void loadKeys();
+	protected abstract void reload();
 
 	protected void rereadFromDisk() {
 		c = YamlConfiguration.loadConfiguration(configFile);
@@ -62,12 +62,8 @@ public abstract class ConfigLoader {
 		try {
 			c.save(configFile);
 		} catch (IOException ex) {
-			//
+			ex.printStackTrace();
 		}
-	}
-
-	protected void set(String key, Object value) {
-		c.set(key, value);
 	}
 
 	protected void saveIfNotExist() {
@@ -77,6 +73,10 @@ public abstract class ConfigLoader {
 				plugin.saveResource(fileName, false);
 			}
 		rereadFromDisk();
+	}
+
+	protected void set(String key, Object value) {
+		c.set(key, value);
 	}
 
 	protected void writeConfig(InputStream in) {
@@ -90,8 +90,7 @@ public abstract class ConfigLoader {
 			}
 			out.flush();
 		} catch (Exception ex) {
-			plugin.getLogger().severe(
-					"Writing default config generating an exception: " + ex.getMessage());
+			ex.printStackTrace();
 		} finally {
 			try {
 				if (in != null) {
@@ -101,9 +100,7 @@ public abstract class ConfigLoader {
 					out.close();
 				}
 			} catch (Exception ex) {
-				plugin.getLogger().severe(
-						"Closing streams for config writes generating an exception: "
-								+ ex.getMessage());
+				ex.printStackTrace();
 			}
 		}
 	}
