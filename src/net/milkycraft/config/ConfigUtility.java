@@ -1,15 +1,10 @@
 package net.milkycraft.config;
 
-import static net.milkycraft.objects.Type.ALL;
-import static net.milkycraft.objects.Type.BABY;
-import static net.milkycraft.objects.Type.BOTH;
+import static net.milkycraft.types.Type.*;
 
 import java.util.Set;
 
-import net.milkycraft.objects.Item;
-import net.milkycraft.objects.Meta;
-import net.milkycraft.objects.Spawnable;
-import net.milkycraft.objects.Type;
+import net.milkycraft.types.*;
 
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
@@ -28,6 +23,7 @@ public class ConfigUtility {
 		ConfigUtility.loadBlockedSpawnReasons(wc);
 	}
 
+	@SuppressWarnings("deprecation")
 	private static void loadBlockedItems(WorldConfiguration wc) {
 		for (String s : wc.c.getStringList("Disable.Usage.Blocked_Items")) {
 			try {
@@ -51,6 +47,7 @@ public class ConfigUtility {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	private static void loadBlockedInteractionBlocks(WorldConfiguration wc) {
 		for (String s : wc.c.getStringList("Disable.Interaction.Blocked_Blocks")) {
 			try {
@@ -68,6 +65,7 @@ public class ConfigUtility {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	private static void loadBlockedDispenserItems(WorldConfiguration wc) {
 		for (String s : wc.c.getStringList("Disable.Dispensing.Blocked_Items")) {
 			try {
@@ -86,6 +84,7 @@ public class ConfigUtility {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	private static void loadBlockedSpawnEggs(WorldConfiguration wc) {
 		for (String s : wc.c.getStringList("EggManager.Disabled_Eggs")) {
 			try {
@@ -101,9 +100,10 @@ public class ConfigUtility {
 		Set<Spawnable> l = wc.disMobs;
 		for (String s : wc.c.getStringList("SpawnManager.Disallowed_Mobs")) {
 			try {
-				if (s.indexOf(":") <= 0) {
+				if (s.indexOf(":") == -1) {
 					l.add(new Spawnable(EntityType.valueOf(s.toUpperCase()), ALL));
 				} else {
+					// ex. zombie:baby sheep:red sheep:baby:black
 					String[] a = s.split(":");
 					EntityType t = EntityType.valueOf(a[0].toUpperCase());
 					String s1 = t.toString();
