@@ -1,7 +1,6 @@
 package net.milkycraft.commands;
 
-import static org.bukkit.ChatColor.GOLD;
-import static org.bukkit.ChatColor.GREEN;
+import static org.bukkit.ChatColor.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
