@@ -7,10 +7,10 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import net.milkycraft.EntityManager;
-import net.milkycraft.objects.Item;
-import net.milkycraft.objects.Option;
-import net.milkycraft.objects.Spawnable;
-import net.milkycraft.objects.Type;
+import net.milkycraft.types.Item;
+import net.milkycraft.types.Option;
+import net.milkycraft.types.Spawnable;
+import net.milkycraft.types.Type;
 
 import org.bukkit.Color;
 import org.bukkit.entity.EntityType;
@@ -22,6 +22,7 @@ public class WorldConfiguration extends ConfigLoader {
 	private final double REV = 1.7;
 	private boolean[] b = new boolean[23];
 	private long[] l = new long[2];
+	
 	protected Set<Item> usageBlock = new HashSet<Item>();
 	protected Set<Item> dispBlock = new HashSet<Item>();
 	protected Set<Short> disEggs = new HashSet<Short>();
@@ -41,6 +42,7 @@ public class WorldConfiguration extends ConfigLoader {
 		if (performUpdate(c.getDouble("Settings.Config_Revision", 0.1))) {
 			l[0] = c.getLong("TimeManager.Target_Time", 12000L);
 			l[1] = c.getLong("TimeManager.Set_Every", 100L);
+			
 			load(0, "Settings.Admin-Alerts", true);
 			load(1, "Settings.Player-Alerts", true);
 			load(2, "Settings.Logging", true);
@@ -138,6 +140,7 @@ public class WorldConfiguration extends ConfigLoader {
 		}
 	}
 
+	@Override
 	public void reload() {
 		this.dispBlock.clear();
 		this.disEggs.clear();
