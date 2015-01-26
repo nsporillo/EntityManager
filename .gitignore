@@ -1,4 +1,4 @@
 */bin/
-*.classpath
-*.project
-*.jardesc
+*/entitymanager/*.classpath
+*/entitymanager/*.project
+*/entitymanager/*.jardesc
