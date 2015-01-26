@@ -7,16 +7,16 @@ import java.util.List;
 
 import net.milkycraft.EntityManager;
 import net.milkycraft.config.WorldConfiguration;
+import net.milkycraft.types.Permission;
 
 import org.bukkit.command.CommandSender;
 
 public class ReloadCommand extends BaseCommand {
-
 	public ReloadCommand(EntityManager plugin) {
 		super(plugin);
 		super.setName("reload");
-		super.addUsage(null, null, "Reloads the world configurations");
-		super.setPermission("entitymanager.reload");
+		super.addUsage("Reloads config (all if blank)", "[world]");
+		super.setPermission(Permission.aDMINR);
 	}
 
 	@Override
@@ -28,7 +28,6 @@ public class ReloadCommand extends BaseCommand {
 		if (args.size() == 0) {
 			for (WorldConfiguration c : plugin.getWorlds())
 				reloadWorld(s, c);
-
 			s.sendMessage(BLUE + "Reloaded all world configs!");
 		} else
 			for (WorldConfiguration c : plugin.getWorlds())
