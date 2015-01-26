@@ -1,28 +1,26 @@
 package net.milkycraft;
 
+import static net.milkycraft.types.Option.INTERVAL;
+import static net.milkycraft.types.Option.TARGET;
+import static net.milkycraft.types.Option.TIME;
 import net.milkycraft.config.WorldConfiguration;
-import net.milkycraft.objects.Option;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
-public class TimeManager extends Utility {
+public class TimeManager {
 
-	public TimeManager(EntityManager manager) {
-		super(manager);
-		for (WorldConfiguration conf : super.getHandle().getWorlds()) {
-			if (conf.get(Option.TIME)) {
-				String m = conf.getWorld();
-				long i = conf.g(Option.INTERVAL);
-				long t = conf.g(Option.TARGET);
-				start(m, i, t);
+	public TimeManager(EntityManager em) {
+		for (WorldConfiguration conf : em.getWorlds()) {
+			if (conf.get(TIME)) {
+				start(em, conf.getWorld(), conf.g(INTERVAL), conf.g(TARGET));
 			}
 		}
 	}
 
-	private void start(String name, final long target, long every) {
+	private void start(EntityManager em, String name, final long target, long every) {
 		final World world = Bukkit.getWorld(name);
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(super.getHandle(), new Runnable() {
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(em, new Runnable() {
 
 			@Override
 			public void run() {
