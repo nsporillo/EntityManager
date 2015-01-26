@@ -1,4 +1,4 @@
-package net.milkycraft.objects;
+package net.milkycraft.types;
 
 public class Item {
 

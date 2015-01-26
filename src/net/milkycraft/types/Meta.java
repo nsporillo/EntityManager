@@ -1,4 +1,4 @@
-package net.milkycraft.objects;
+package net.milkycraft.types;
 
 import org.bukkit.Color;
 
@@ -21,8 +21,6 @@ public class Meta {
 	}
 
 	public Color getColor() {
-		if (this.color == null)
-			return null;
 		return this.color;
 	}
 }

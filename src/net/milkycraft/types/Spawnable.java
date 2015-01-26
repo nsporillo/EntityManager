@@ -1,4 +1,4 @@
-package net.milkycraft.objects;
+package net.milkycraft.types;
 
 import org.bukkit.Color;
 import org.bukkit.entity.EntityType;
