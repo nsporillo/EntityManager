@@ -16,13 +16,9 @@ public class EntityManager extends JavaPlugin {
 
 	private CommandHandler handler = new CommandHandler(this);
 	private List<WorldConfiguration> configs;
-	private PrimaryListener pl;
-	private AuxiliaryListener al;
 
 	@Override
 	public void onEnable() {
-		pl = new PrimaryListener(this);
-		al = new AuxiliaryListener(this);
 		Bukkit.getScheduler().runTask(this, new Runnable() {
 
 			@Override
@@ -30,6 +26,7 @@ public class EntityManager extends JavaPlugin {
 				EntityManager.this.load();
 				new TimeManager(EntityManager.this);
 				getLogger().info(configs.size() + " worlds loaded");
+				new EventListener(EntityManager.this);
 			}
 
 		});
@@ -45,7 +42,6 @@ public class EntityManager extends JavaPlugin {
 		configs = new ArrayList<WorldConfiguration>();
 		for (World w : Bukkit.getWorlds())
 			load(w.getName());
-
 	}
 
 	public WorldConfiguration load(String w) {
@@ -54,19 +50,11 @@ public class EntityManager extends JavaPlugin {
 		return wc;
 	}
 
-	public WorldConfiguration getWorld(String world) {
+	protected WorldConfiguration getWorld(String world) {
 		for (WorldConfiguration wc : this.configs)
 			if (wc.getWorld().equals(world))
 				return wc;
-		throw new NullPointerException();
-	}
-
-	public PrimaryListener getPrimaryListener() {
-		return pl;
-	}
-
-	public AuxiliaryListener getAuxiliaryListener() {
-		return al;
+		throw new RuntimeException("Config not found! " + world);
 	}
 
 	public List<WorldConfiguration> getWorlds() {
