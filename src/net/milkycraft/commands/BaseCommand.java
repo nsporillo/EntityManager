@@ -12,12 +12,14 @@ import java.util.List;
 
 import net.milkycraft.EntityManager;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 /**
  * @author krinsdeath
  */
 public abstract class BaseCommand implements Command {
+
 	protected EntityManager plugin;
 	protected String name;
 	protected String permission;
@@ -28,23 +30,20 @@ public abstract class BaseCommand implements Command {
 		this.plugin = plugin;
 	}
 
-	protected final void addUsage(final String sub1, final String sub2, final String description) {
+	public final void addUsage(String desc, String... uses) {
 		final StringBuilder usage = new StringBuilder().append(BLUE).append(
 				String.format("%1$-" + 8 + "s", this.name));
-		if (sub1 != null) {
-			usage.append(YELLOW);
-			usage.append(String.format("%1$-" + 8 + "s", sub1));
-		} else {
-			usage.append(String.format("%1$-" + 8 + "s", ""));
-		}
-		if (sub2 != null) {
-			usage.append(AQUA);
-			usage.append(String.format("%1$-" + 8 + "s", sub2));
-		} else {
-			usage.append(String.format("%1$-" + 8 + "s", ""));
+		boolean color = true;
+		for (String use : uses) {
+			if (color)
+				usage.append(YELLOW);
+			else
+				usage.append(AQUA);
+			color = !color;
+			usage.append(String.format("%1$-" + 8 + "s", use));
 		}
 		usage.append(GREEN);
-		usage.append(description);
+		usage.append(desc);
 		this.usages.add(usage.toString());
 	}
 
@@ -77,7 +76,8 @@ public abstract class BaseCommand implements Command {
 	@Override
 	public void showHelp(final CommandSender sender, final String label) {
 		for (final String usage : this.usages) {
-			sender.sendMessage(GRAY + String.format("%1$-" + 10 + "s", label) + usage);
+			sender.sendMessage(GRAY + String.format("%1$-" + 10 + "s", label)
+					+ ChatColor.translateAlternateColorCodes('&', usage));
 		}
 	}
 }
