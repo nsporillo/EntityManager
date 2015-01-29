@@ -20,7 +20,7 @@ public class LogFile {
 	private static String[] names = { "Amplified Potions", "Blocked Blocks", "Disabled Eggs",
 			"Disabled Mobs", "Dispenser Block", "Disabled Reasons", "Usage Block" };
 
-	public static void newDump(EntityManager em) {
+	public static int newDump(EntityManager em) {
 		List<String> lines = new ArrayList<String>();
 
 		for (WorldConfiguration wc : em.getWorlds()) {
@@ -39,6 +39,7 @@ public class LogFile {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return lines.size();
 	}
 
 	private static List<String> collect(Object... all) {
