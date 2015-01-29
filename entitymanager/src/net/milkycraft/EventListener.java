@@ -382,9 +382,11 @@ public class EventListener extends Utility implements Listener {
 			}
 			
 			int mult = conf.getMultiplier(is.getDurability());
-			for(LivingEntity le : e.getAffectedEntities()) {
-				e.setIntensity(le, mult);
-			}
+			if(mult > 1) {
+				for(LivingEntity le : e.getAffectedEntities()) {
+					e.setIntensity(le, mult);
+				}
+			}			
 		}
 	}
 
