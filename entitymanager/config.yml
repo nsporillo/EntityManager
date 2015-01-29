@@ -42,7 +42,7 @@ PotionManager:
   DisableDispensing:
   - Potion:16426
   IntensityModifier:
-  - Potion:16426:2
+  - Potion:16418:3
 TimeManager:
   Enabled: false
   Target_Time: 12000
