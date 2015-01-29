@@ -21,4 +21,9 @@ public class Item {
 	public int getDurability() {
 		return dura;
 	}
+
+	@Override
+	public String toString() {
+		return "Item [id=" + id + ", dura=" + dura + "]";
+	}
 }

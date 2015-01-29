@@ -13,4 +13,10 @@ public class Potion extends Item {
 		return mult;
 	}
 	
+	@Override
+	public String toString() {
+		return "Potion [mult=" + mult + ", getId()=" + getId() + ", getDurability()="
+				+ getDurability() + "]";
+	}
+
 }

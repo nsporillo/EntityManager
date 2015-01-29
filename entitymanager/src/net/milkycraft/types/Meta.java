@@ -23,4 +23,9 @@ public class Meta {
 	public Color getColor() {
 		return this.color;
 	}
+
+	@Override
+	public String toString() {
+		return "Meta [type=" + type + ", color=" + color + "]";
+	}
 }

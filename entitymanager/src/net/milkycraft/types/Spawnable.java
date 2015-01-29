@@ -5,8 +5,8 @@ import org.bukkit.entity.EntityType;
 
 public class Spawnable {
 
-	private Meta meta;
 	private EntityType type;
+	private Meta meta;
 
 	public Spawnable(EntityType type, Type t, Color color) {
 		this(type, new Meta(t, color));
@@ -36,4 +36,11 @@ public class Spawnable {
 	public Color getColor() {
 		return this.meta.getColor();
 	}
+
+	@Override
+	public String toString() {
+		return "Spawnable [type=" + type + ", meta=" + meta + "]";
+	}
+	
+	
 }
