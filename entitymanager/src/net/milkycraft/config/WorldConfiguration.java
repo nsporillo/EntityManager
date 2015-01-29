@@ -135,9 +135,20 @@ public class WorldConfiguration extends ConfigLoader {
 			super.set("Settings.Config_Revision", 1.7);
 			super.set("EggManager.Disable_All", false);
 			super.set("SpawnManager.Disallow_All", false);
-			plugin.getLogger().info("Successfully updated " + fileName + " to 1.7");
 			return false;
-		} else {
+		} else if (rev == 1.7) {
+			super.set("Settings.Config_Revision", 1.8);
+			super.set("PotionManager.Enabled", false);
+			List<String> list = new ArrayList<String>();
+			list.add("Potion:16426");
+			super.set("PotionManager.DisableThrowing", list);
+			super.set("PotionManager.DisableDispensing", list);
+			list.clear();
+			list.add("Potion:16418:3");
+			super.set("PotionManager.IntensityModifier", list);
+			plugin.getLogger().info("Successfully updated " + fileName + " to 1.8");
+			return false;
+		}else {
 			plugin.getLogger().warning("Config update failed, check version (" + rev + ")");
 			return true;
 		}
