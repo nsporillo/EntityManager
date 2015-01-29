@@ -20,7 +20,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 public class WorldConfiguration extends ConfigLoader {
 
 	private final String world;
-	private final double REV = 1.7;
+	private final double REV = 1.8;
 	private boolean[] b = new boolean[24];
 	private long[] l = new long[2];
 
