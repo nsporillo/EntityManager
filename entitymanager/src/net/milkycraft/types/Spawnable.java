@@ -41,6 +41,4 @@ public class Spawnable {
 	public String toString() {
 		return "Spawnable [type=" + type + ", meta=" + meta + "]";
 	}
-	
-	
 }

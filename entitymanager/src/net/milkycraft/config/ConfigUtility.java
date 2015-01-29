@@ -50,14 +50,14 @@ public class ConfigUtility {
 
 	private static void loadPotionManager(WorldConfiguration wc) {
 		if (wc.get(Option.POTION)) {
-			
+
 			// disable hand throwing potions
 			handle(wc, "PotionManager.DisableThrowing", wc.usageBlock);
-			
+
 			// disable dispenser throwing potions
 			handle(wc, "PotionManager.DisableDispensing", wc.dispBlock);
-			
-			// apply amplifiers 
+
+			// apply amplifiers
 			for (String s : wc.c.getStringList("PotionManager.IntensityModifier")) {
 				if (s.toLowerCase().startsWith("potion")) {
 					String[] args = s.split(":");
@@ -76,7 +76,7 @@ public class ConfigUtility {
 			}
 		}
 	}
-	
+
 	private static void handle(WorldConfiguration wc, String val, Set<Item> add) {
 		for (String s : wc.c.getStringList(val)) {
 			if (s.toLowerCase().startsWith("potion")) {

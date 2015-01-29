@@ -148,7 +148,7 @@ public class WorldConfiguration extends ConfigLoader {
 			super.set("PotionManager.IntensityModifier", new ArrayList<String>(list));
 			plugin.getLogger().info("Successfully updated " + fileName + " to 1.8");
 			return false;
-		}else {
+		} else {
 			plugin.getLogger().warning("Config update failed, check version (" + rev + ")");
 			return true;
 		}
@@ -202,9 +202,9 @@ public class WorldConfiguration extends ConfigLoader {
 	public double getMultiplier(int pot) {
 		double mult = 1;
 		for (Potion i : this.ampedPots)
-			if(pot == i.getDurability()) {
+			if (pot == i.getDurability()) {
 				return i.getMultiplier();
-			}			
+			}
 		return mult;
 	}
 

@@ -42,6 +42,7 @@ public class LogFile {
 		return lines.size();
 	}
 
+	@SuppressWarnings({ "unchecked", "deprecation" })
 	private static List<String> collect(Object... all) {
 		List<String> list = new ArrayList<String>();
 		int i = 0;
@@ -49,8 +50,8 @@ public class LogFile {
 			list.add("\t" + names[i] + ": ");
 			Set<Object> cc = (Set<Object>) c;
 			for (Object s : cc) {
-				if(s instanceof Short) {
-					Short ss = (Short)s;
+				if (s instanceof Short) {
+					Short ss = (Short) s;
 					list.add("\t\t" + EntityType.fromId(ss.intValue()));
 					continue;
 				}

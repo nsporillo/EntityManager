@@ -93,7 +93,7 @@ public class Utility {
 		al(conf, "Player " + p.getName() + " tried to use a " + item);
 		al(conf, p, "&cYou don't have permission to throw " + item.concat("s"));
 	}
-	
+
 	public void warn(WorldConfiguration conf, Player p, Potion pot) {
 		String item = getName(pot) + " potion";
 		al(conf, "Player " + p.getName() + " tried to use a " + item);

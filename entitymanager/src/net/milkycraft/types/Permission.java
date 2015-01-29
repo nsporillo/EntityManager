@@ -11,7 +11,6 @@ package net.milkycraft.types;
  * abbreviate for longer perms
  */
 public class Permission {
-	
 
 	public final static String iTRADE = "entitymanager.interact.trade";
 	public final static String iSHOOT = "entitymanager.interact.shoot";
@@ -25,14 +24,14 @@ public class Permission {
 	public final static String iTSNOW = "entitymanager.interact.snow_ball";
 	public final static String iTHEGG = "entitymanager.interact.egg";
 	public final static String iUITEM = "entitymanager.interact.";
- 	
+
 	public final static String dKEEXP = "entitymanager.death.keepexp";
 	public final static String dKITEM = "entitymanager.death.keepitems";
-	
+
 	public final static String cPRTAL = "entitymanager.create.portal";
-	
+
 	public final static String sNTITY = "entitymanager.spawn.";
-	
+
 	public final static String aDMINA = "entitymanager.admin.alert";
 	public final static String aDMINR = "entitymanager.admin.reload";
 	public final static String aDMIND = "entitymanager.admin.dump";

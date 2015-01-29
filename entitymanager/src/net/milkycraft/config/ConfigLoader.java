@@ -52,6 +52,7 @@ public abstract class ConfigLoader {
 	}
 
 	protected abstract void loadKeys();
+
 	protected abstract void reload();
 
 	protected void rereadFromDisk() {
