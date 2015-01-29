@@ -50,7 +50,8 @@ public class LogFile {
 			Set<Object> cc = (Set<Object>) c;
 			for (Object s : cc) {
 				if(s instanceof Short) {
-					list.add("\t\t" + EntityType.fromId((int) s));
+					Short ss = (Short)s;
+					list.add("\t\t" + EntityType.fromId(ss.intValue()));
 					continue;
 				}
 				list.add("\t\t" + s.toString());
