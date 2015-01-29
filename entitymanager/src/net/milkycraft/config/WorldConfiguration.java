@@ -20,7 +20,7 @@ public class WorldConfiguration extends ConfigLoader {
 
 	private final String world;
 	private final double REV = 1.7;
-	private boolean[] b = new boolean[23];
+	private boolean[] b = new boolean[24];
 	private long[] l = new long[2];
 	
 	protected Set<Item> usageBlock = new HashSet<Item>();
@@ -57,15 +57,16 @@ public class WorldConfiguration extends ConfigLoader {
 			load(11, "Disable.Interaction.Trading", false);
 			load(12, "Disable.Other.Monster_Spawner_Exp", false);
 			load(13, "Disable.Other.Monster_Spawner_Drops", false);
-			load(14, "TimeManager.Enabled", false);
-			load(15, "EggManager.Disable_All", false);
-			load(16, "SpawnManager.Disallow_All", false);
-			load(17, "SpawnManager.Remove_Armor", false);
-			load(18, "DeathManager.Player.Keep_Exp", false);
-			load(19, "DeathManager.Entity.Drop_Exp", false);
-			load(20, "DeathManager.Entity.Drop_Items", true);
-			load(21, "DeathManager.Player.Keep_Items", false);
-			load(22, "Disable.Interaction.Portal_Creation", false);
+			load(14, "PotionManager.Enabled", false);
+			load(15, "TimeManager.Enabled", false);
+			load(16, "EggManager.Disable_All", false);
+			load(17, "SpawnManager.Disallow_All", false);
+			load(18, "SpawnManager.Remove_Armor", false);
+			load(19, "DeathManager.Player.Keep_Exp", false);
+			load(20, "DeathManager.Entity.Drop_Exp", false);
+			load(21, "DeathManager.Entity.Drop_Items", true);
+			load(22, "DeathManager.Player.Keep_Items", false);
+			load(23, "Disable.Interaction.Portal_Creation", false);
 			ConfigUtility.load(this);
 		} else {
 			super.saveConfig();
