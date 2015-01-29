@@ -307,7 +307,8 @@ public class EventListener extends Utility implements Listener {
 			if (e.getDamager() instanceof Player) {
 				Player ag = ((Player) e.getDamager());
 				e.setCancelled(alert(conf, ag, attacked.getName()));
-			} else if (e.getDamager() instanceof Projectile && !(e.getDamager() instanceof EnderPearl)) {
+			} else if (e.getDamager() instanceof Projectile
+					&& !(e.getDamager() instanceof EnderPearl)) {
 				ProjectileSource a = ((Projectile) e.getDamager()).getShooter();
 				if (a instanceof Player) {
 					Player p = (Player) a;
@@ -369,24 +370,28 @@ public class EventListener extends Utility implements Listener {
 			Player p = (Player) e.getEntity().getShooter();
 			ItemStack is = e.getPotion().getItem();
 			short dura = is.getDurability();
-			if (hasPermission(p, iPTION) || hasPermission(p, iPTION + "." + dura)) {
-				return;
-			}
+
 			WorldConfiguration conf = getConfig(p.getWorld());
 			if (conf.usagePotion(is.getDurability())) {
+				if (hasPermission(p, iPTION) || hasPermission(p, iPTION + "." + dura)) {
+					return;
+				}
 				e.setCancelled(true);
 				String potion = getName(Potion.fromItemStack(is)) + " potion";
 				al(conf, "Player " + p.getName() + " tried to use an " + potion + ".");
 				al(conf, p, "&cYou don't have permission to use that &6" + potion + "&c.");
 				return;
 			}
-			
+
 			int mult = conf.getMultiplier(is.getDurability());
-			if(mult > 1) {
-				for(LivingEntity le : e.getAffectedEntities()) {
+			if (mult > 1) {
+				for (LivingEntity le : e.getAffectedEntities()) {
+					System.out.println("Old intensity: " + e.getIntensity(le));
 					e.setIntensity(le, mult);
 				}
-			}			
+				System.out.println("Potion multiplier: " + mult + " on " + "373:"
+						+ is.getDurability());
+			}
 		}
 	}
 
