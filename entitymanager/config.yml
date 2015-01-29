@@ -27,7 +27,6 @@ Disable:
     Blocked_Items:
     - Exp_Bottle
     - Fireball
-    - Potion:16426
   Dispensing:
     Blocked_Items:
     - Bedrock
