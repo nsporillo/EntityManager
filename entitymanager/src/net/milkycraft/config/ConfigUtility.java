@@ -2,6 +2,7 @@ package net.milkycraft.config;
 
 import static net.milkycraft.types.Type.*;
 
+import java.util.List;
 import java.util.Set;
 
 import net.milkycraft.types.*;
@@ -21,6 +22,7 @@ public class ConfigUtility {
 		ConfigUtility.loadBlockedSpawnEggs(wc);
 		ConfigUtility.loadBlockedEntities(wc);
 		ConfigUtility.loadBlockedSpawnReasons(wc);
+		ConfigUtility.loadPotionManager(wc);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -43,6 +45,54 @@ public class ConfigUtility {
 					wc.getLog().severe("Invalid value: " + s);
 					wc.getLog().severe("Reference: http://goo.gl/f1Nmb");
 				}
+			}
+		}
+	}
+
+	private static void loadPotionManager(WorldConfiguration wc) {
+		if (wc.get(Option.POTION)) {
+			
+			// disable hand throwing potions
+			handle(wc, "PotionManager.DisableThrowing", wc.usageBlock);
+			
+			// disable dispenser throwing potions
+			handle(wc, "PotionManager.DisableDispensing", wc.dispBlock);
+			
+			// apply amplifiers 
+			
+			for (String s : wc.c.getStringList("PotionManager.IntensityModifier")) {
+				if (s.toLowerCase().startsWith("potion")) {
+					String[] args = s.split(":");
+					try {
+						Integer id = Integer.parseInt(args[1]);
+						Integer mult = Integer.parseInt(args[2]);
+						wc.ampedPots.add(new Potion(373, id, mult));
+					} catch (Exception ex2) {
+						wc.getLog().severe("Invalid value: " + s);
+						wc.getLog().severe("Potion format=> \"potion:#\"");
+					}
+				} else {
+					wc.getLog().severe("Invalid value: " + s);
+					wc.getLog().severe("Potion format=> \"potion:#\"");
+				}
+			}
+		}
+	}
+	
+	private static void handle(WorldConfiguration wc, String val, Set<Item> add) {
+		for (String s : wc.c.getStringList(val)) {
+			if (s.toLowerCase().startsWith("potion")) {
+				String[] args = s.split(":");
+				try {
+					Integer id = Integer.parseInt(args[1]);
+					add.add(new Item(373, id));
+				} catch (Exception ex2) {
+					wc.getLog().severe("Invalid value: " + s);
+					wc.getLog().severe("Potion format=> \"potion:#\"");
+				}
+			} else {
+				wc.getLog().severe("Invalid value: " + s);
+				wc.getLog().severe("Potion format=> \"potion:#\"");
 			}
 		}
 	}
