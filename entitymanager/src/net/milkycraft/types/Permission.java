@@ -35,5 +35,6 @@ public class Permission {
 	
 	public final static String aDMINA = "entitymanager.admin.alert";
 	public final static String aDMINR = "entitymanager.admin.reload";
+	public final static String aDMIND = "entitymanager.admin.dump";
 
 }
