@@ -59,7 +59,6 @@ public class ConfigUtility {
 			handle(wc, "PotionManager.DisableDispensing", wc.dispBlock);
 			
 			// apply amplifiers 
-			
 			for (String s : wc.c.getStringList("PotionManager.IntensityModifier")) {
 				if (s.toLowerCase().startsWith("potion")) {
 					String[] args = s.split(":");

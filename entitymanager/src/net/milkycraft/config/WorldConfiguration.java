@@ -24,13 +24,13 @@ public class WorldConfiguration extends ConfigLoader {
 	private boolean[] b = new boolean[24];
 	private long[] l = new long[2];
 
-	protected Set<Item> usageBlock = new HashSet<Item>();
-	protected Set<Item> dispBlock = new HashSet<Item>();
-	protected Set<Short> disEggs = new HashSet<Short>();
-	protected Set<Spawnable> disMobs = new HashSet<Spawnable>();
-	protected Set<String> disReasons = new HashSet<String>();
-	protected Set<Item> blockedBlocks = new HashSet<Item>();
-	protected Set<Potion> ampedPots = new HashSet<Potion>();
+	public Set<Item> usageBlock = new HashSet<Item>();
+	public Set<Item> dispBlock = new HashSet<Item>();
+	public Set<Short> disEggs = new HashSet<Short>();
+	public Set<Spawnable> disMobs = new HashSet<Spawnable>();
+	public Set<String> disReasons = new HashSet<String>();
+	public Set<Item> blockedBlocks = new HashSet<Item>();
+	public Set<Potion> ampedPots = new HashSet<Potion>();
 
 	public WorldConfiguration(EntityManager plugin, String world) {
 		super(plugin, world + ".yml");
@@ -141,11 +141,11 @@ public class WorldConfiguration extends ConfigLoader {
 			super.set("PotionManager.Enabled", false);
 			List<String> list = new ArrayList<String>();
 			list.add("Potion:16426");
-			super.set("PotionManager.DisableThrowing", list);
-			super.set("PotionManager.DisableDispensing", list);
+			super.set("PotionManager.DisableThrowing", new ArrayList<String>(list));
+			super.set("PotionManager.DisableDispensing", new ArrayList<String>(list));
 			list.clear();
 			list.add("Potion:16418:3");
-			super.set("PotionManager.IntensityModifier", list);
+			super.set("PotionManager.IntensityModifier", new ArrayList<String>(list));
 			plugin.getLogger().info("Successfully updated " + fileName + " to 1.8");
 			return false;
 		}else {
@@ -202,7 +202,9 @@ public class WorldConfiguration extends ConfigLoader {
 	public int getMultiplier(int pot) {
 		int mult = 1;
 		for (Potion i : this.ampedPots)
-			return i.getMultiplier();
+			if(pot == i.getDurability()) {
+				return i.getMultiplier();
+			}			
 		return mult;
 	}
 
