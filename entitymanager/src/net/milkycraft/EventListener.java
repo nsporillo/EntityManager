@@ -378,8 +378,13 @@ public class EventListener extends Utility implements Listener {
 				String potion = getName(Potion.fromItemStack(is)) + " potion";
 				al(conf, "Player " + p.getName() + " tried to use an " + potion + ".");
 				al(conf, p, "&cYou don't have permission to use that &6" + potion + "&c.");
+				return;
 			}
-			return;
+			
+			int mult = conf.getMultiplier(is.getDurability());
+			for(LivingEntity le : e.getAffectedEntities()) {
+				e.setIntensity(le, mult);
+			}
 		}
 	}
 

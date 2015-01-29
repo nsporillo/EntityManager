@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import net.milkycraft.EntityManager;
 import net.milkycraft.types.Item;
+import net.milkycraft.types.Potion;
 import net.milkycraft.types.Option;
 import net.milkycraft.types.Spawnable;
 import net.milkycraft.types.Type;
@@ -22,13 +23,14 @@ public class WorldConfiguration extends ConfigLoader {
 	private final double REV = 1.7;
 	private boolean[] b = new boolean[24];
 	private long[] l = new long[2];
-	
+
 	protected Set<Item> usageBlock = new HashSet<Item>();
 	protected Set<Item> dispBlock = new HashSet<Item>();
 	protected Set<Short> disEggs = new HashSet<Short>();
 	protected Set<Spawnable> disMobs = new HashSet<Spawnable>();
 	protected Set<String> disReasons = new HashSet<String>();
 	protected Set<Item> blockedBlocks = new HashSet<Item>();
+	protected Set<Potion> ampedPots = new HashSet<Potion>();
 
 	public WorldConfiguration(EntityManager plugin, String world) {
 		super(plugin, world + ".yml");
@@ -42,7 +44,7 @@ public class WorldConfiguration extends ConfigLoader {
 		if (performUpdate(c.getDouble("Settings.Config_Revision", 0.1))) {
 			l[0] = c.getLong("TimeManager.Target_Time", 12000L);
 			l[1] = c.getLong("TimeManager.Set_Every", 100L);
-			
+
 			load(0, "Settings.Admin-Alerts", true);
 			load(1, "Settings.Player-Alerts", true);
 			load(2, "Settings.Logging", true);
@@ -184,6 +186,13 @@ public class WorldConfiguration extends ConfigLoader {
 				if (i.getDurability() == pot)
 					return true;
 		return false;
+	}
+
+	public int getMultiplier(int pot) {
+		int mult = 1;
+		for (Potion i : this.ampedPots)
+			return i.getMultiplier();
+		return mult;
 	}
 
 	public boolean dispensePotion(int pot) {
