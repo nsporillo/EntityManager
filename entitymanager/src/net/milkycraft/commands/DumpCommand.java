@@ -26,6 +26,6 @@ public class DumpCommand extends BaseCommand {
 			return;
 		}
 		int lines = LogFile.newDump(super.plugin);
-		s.sendMessage(BLUE + "Generated log file with" + GREEN + lines + " lines");
+		s.sendMessage(BLUE + "Generated log file with " + GREEN + lines + " lines");
 	}
 }
