@@ -20,6 +20,7 @@ public class CommandHandler {
 
 	public CommandHandler(EntityManager plugin) {
 		cmds.put("reload", new ReloadCommand(plugin));
+		cmds.put("dump", new DumpCommand(plugin));
 	}
 
 	public void runCommand(CommandSender s, String l, String[] a) {
