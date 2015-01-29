@@ -35,6 +35,14 @@ Disable:
   Other:
     Monster_Spawner_Exp: false
     Monster_Spawner_Drops: false
+PotionManager:
+  Enabled: false 
+  DisableThrowing:
+  - Potion:16426
+  DisableDispensing:
+  - Potion:16426
+  IntensityModifier:
+  - Potion:16426:2
 TimeManager:
   Enabled: false
   Target_Time: 12000
