@@ -63,6 +63,8 @@ import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectTypeWrapper;
 import org.bukkit.projectiles.ProjectileSource;
 
 public class EventListener extends Utility implements Listener {
@@ -383,14 +385,10 @@ public class EventListener extends Utility implements Listener {
 				return;
 			}
 
-			int mult = conf.getMultiplier(is.getDurability());
-			if (mult > 1) {
-				for (LivingEntity le : e.getAffectedEntities()) {
-					System.out.println("Old intensity: " + e.getIntensity(le));
-					e.setIntensity(le, mult);
-				}
-				System.out.println("Potion multiplier: " + mult + " on " + "373:"
-						+ is.getDurability());
+			double mult = conf.getMultiplier(is.getDurability());
+			for (LivingEntity le : e.getAffectedEntities()) {
+				double iten = e.getIntensity(le);
+				e.setIntensity(le, iten*mult);
 			}
 		}
 	}

@@ -2,7 +2,6 @@ package net.milkycraft.config;
 
 import static net.milkycraft.types.Type.*;
 
-import java.util.List;
 import java.util.Set;
 
 import net.milkycraft.types.*;
@@ -64,7 +63,7 @@ public class ConfigUtility {
 					String[] args = s.split(":");
 					try {
 						Integer id = Integer.parseInt(args[1]);
-						Integer mult = Integer.parseInt(args[2]);
+						Double mult = Double.parseDouble(args[2]);
 						wc.ampedPots.add(new Potion(373, id, mult));
 					} catch (Exception ex2) {
 						wc.getLog().severe("Invalid value: " + s);

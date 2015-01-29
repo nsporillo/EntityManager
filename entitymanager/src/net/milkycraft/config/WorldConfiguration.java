@@ -144,7 +144,7 @@ public class WorldConfiguration extends ConfigLoader {
 			super.set("PotionManager.DisableThrowing", new ArrayList<String>(list));
 			super.set("PotionManager.DisableDispensing", new ArrayList<String>(list));
 			list.clear();
-			list.add("Potion:16418:3");
+			list.add("Potion:16418:0.1");
 			super.set("PotionManager.IntensityModifier", new ArrayList<String>(list));
 			plugin.getLogger().info("Successfully updated " + fileName + " to 1.8");
 			return false;
@@ -199,8 +199,8 @@ public class WorldConfiguration extends ConfigLoader {
 		return false;
 	}
 
-	public int getMultiplier(int pot) {
-		int mult = 1;
+	public double getMultiplier(int pot) {
+		double mult = 1;
 		for (Potion i : this.ampedPots)
 			if(pot == i.getDurability()) {
 				return i.getMultiplier();

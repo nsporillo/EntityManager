@@ -2,14 +2,14 @@ package net.milkycraft.types;
 
 public class Potion extends Item {
 
-	private int mult;
+	private double mult;
 	
-	public Potion(int id, int dura, int mult) {
+	public Potion(int id, int dura, double mult) {
 		super(id, dura);
 		this.mult = mult;
 	}
 
-	public int getMultiplier() {
+	public double getMultiplier() {
 		return mult;
 	}
 	
