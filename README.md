@@ -13,7 +13,7 @@ Support:
 - Pull requests welcome, issues can be made here on github or on the bukkitdev page
 - My email is nsporillo@gmail.com
 - BukkitDev page: http://dev.bukkit.org/bukkit-plugins/entitymanager/
-- Permissions: http://dev.bukkit.org/bukkit-plugins/entitymanager/pages/permissions/
+- Permissions: https://github.com/nsporillo/entitymanager/wiki/Permissions
 
 
-Thanks for checking this out! Will likely move the permissions page to github as this wiki is more user friendly. 
+Thanks for checking this project out! 
