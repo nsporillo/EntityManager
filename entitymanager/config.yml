@@ -31,6 +31,12 @@ Disable:
     Blocked_Items:
     - Bedrock
     - Diamond_Block
+GrindManager:
+  Disable:
+    SpawnerExp: false
+    SpawnEggExp: false
+    SpawnerDrops: false
+    SpawnEggDrops: false
   Other:
     Monster_Spawner_Exp: false
     Monster_Spawner_Drops: false
