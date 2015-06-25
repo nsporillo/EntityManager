@@ -1,4 +1,4 @@
-package net.milkycraft.types;
+package net.porillo.types;
 
 import org.bukkit.Color;
 

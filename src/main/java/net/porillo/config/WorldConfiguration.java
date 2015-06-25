@@ -1,4 +1,4 @@
-package net.milkycraft.config;
+package net.porillo.config;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import net.milkycraft.EntityManager;
-import net.milkycraft.types.Item;
-import net.milkycraft.types.Potion;
-import net.milkycraft.types.Option;
-import net.milkycraft.types.Spawnable;
-import net.milkycraft.types.Type;
+import net.porillo.EntityManager;
+import net.porillo.types.Item;
+import net.porillo.types.Potion;
+import net.porillo.types.Option;
+import net.porillo.types.Spawnable;
+import net.porillo.types.Type;
 
 import org.bukkit.Color;
 import org.bukkit.entity.EntityType;

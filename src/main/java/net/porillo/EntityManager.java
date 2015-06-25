@@ -1,10 +1,10 @@
-package net.milkycraft;
+package net.porillo;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import net.milkycraft.commands.CommandHandler;
-import net.milkycraft.config.WorldConfiguration;
+import net.porillo.commands.CommandHandler;
+import net.porillo.config.WorldConfiguration;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;

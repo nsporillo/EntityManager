@@ -1,9 +1,9 @@
-package net.milkycraft;
+package net.porillo;
 
 import static org.bukkit.ChatColor.translateAlternateColorCodes;
-import net.milkycraft.config.WorldConfiguration;
-import net.milkycraft.types.Option;
-import net.milkycraft.types.Permission;
+import net.porillo.config.WorldConfiguration;
+import net.porillo.types.Option;
+import net.porillo.types.Permission;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

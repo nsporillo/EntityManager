@@ -1,4 +1,4 @@
-package net.milkycraft;
+package net.porillo;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -12,8 +12,8 @@ import java.util.Set;
 
 import org.bukkit.entity.EntityType;
 
-import net.milkycraft.config.WorldConfiguration;
-import net.milkycraft.types.Option;
+import net.porillo.config.WorldConfiguration;
+import net.porillo.types.Option;
 
 public class LogFile {
 

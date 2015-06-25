@@ -1,4 +1,4 @@
-package net.milkycraft.config;
+package net.porillo.config;
 
 import java.io.File;
 import java.io.FileOutputStream;

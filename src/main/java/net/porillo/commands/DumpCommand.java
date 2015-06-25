@@ -1,13 +1,13 @@
-package net.milkycraft.commands;
+package net.porillo.commands;
 
 import static org.bukkit.ChatColor.BLUE;
 import static org.bukkit.ChatColor.GREEN;
 
 import java.util.List;
 
-import net.milkycraft.EntityManager;
-import net.milkycraft.LogFile;
-import net.milkycraft.types.Permission;
+import net.porillo.EntityManager;
+import net.porillo.LogFile;
+import net.porillo.types.Permission;
 
 import org.bukkit.command.CommandSender;
 

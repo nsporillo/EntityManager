@@ -1,8 +1,8 @@
-package net.milkycraft;
+package net.porillo;
 
-import static net.milkycraft.types.Option.*;
-import static net.milkycraft.types.Permission.*;
-import static net.milkycraft.types.Type.*;
+import static net.porillo.types.Option.*;
+import static net.porillo.types.Permission.*;
+import static net.porillo.types.Type.*;
 import static org.bukkit.entity.EntityType.EGG;
 import static org.bukkit.entity.EntityType.ENDER_PEARL;
 import static org.bukkit.entity.EntityType.FISHING_HOOK;
@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.milkycraft.config.WorldConfiguration;
-import net.milkycraft.types.Type;
+import net.porillo.config.WorldConfiguration;
+import net.porillo.types.Type;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;

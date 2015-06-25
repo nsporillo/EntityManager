@@ -1,10 +1,10 @@
-package net.milkycraft.config;
+package net.porillo.config;
 
-import static net.milkycraft.types.Type.*;
+import static net.porillo.types.Type.*;
 
 import java.util.Set;
 
-import net.milkycraft.types.*;
+import net.porillo.types.*;
 
 import org.bukkit.Color;
 import org.bukkit.DyeColor;

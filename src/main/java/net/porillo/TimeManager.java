@@ -1,9 +1,9 @@
-package net.milkycraft;
+package net.porillo;
 
-import static net.milkycraft.types.Option.INTERVAL;
-import static net.milkycraft.types.Option.TARGET;
-import static net.milkycraft.types.Option.TIME;
-import net.milkycraft.config.WorldConfiguration;
+import static net.porillo.types.Option.INTERVAL;
+import static net.porillo.types.Option.TARGET;
+import static net.porillo.types.Option.TIME;
+import net.porillo.config.WorldConfiguration;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;

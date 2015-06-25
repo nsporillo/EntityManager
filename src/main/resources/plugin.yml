@@ -1,0 +1,10 @@
+name: EntityManager
+author: milkywayz 
+main: net.porillotityManager
+version: 5.6
+commands:   
+    entitymanager:      
+      aliases: em      
+      description: The main command for entitymanager
+
+  

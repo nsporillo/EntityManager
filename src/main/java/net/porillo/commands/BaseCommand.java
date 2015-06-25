@@ -1,4 +1,4 @@
-package net.milkycraft.commands;
+package net.porillo.commands;
 
 import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.BLUE;
@@ -10,7 +10,7 @@ import static org.bukkit.ChatColor.YELLOW;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.milkycraft.EntityManager;
+import net.porillo.EntityManager;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
