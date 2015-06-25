@@ -2,3 +2,4 @@
 *.project
 *.jardesc
 *.class
+/bin/
