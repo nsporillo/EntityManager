@@ -16,13 +16,13 @@ public class WorldConfiguration extends ConfigLoader {
 
     private final String world;
     private final double REV = 1.8;
-    public Set<Item> usageBlock = new HashSet<Item>();
-    public Set<Item> dispBlock = new HashSet<Item>();
-    public Set<Short> disEggs = new HashSet<Short>();
-    public Set<Spawnable> disMobs = new HashSet<Spawnable>();
-    public Set<String> disReasons = new HashSet<String>();
-    public Set<Item> blockedBlocks = new HashSet<Item>();
-    public Set<Potion> ampedPots = new HashSet<Potion>();
+    public Set<Item> usageBlock = new HashSet<>();
+    public Set<Item> dispBlock = new HashSet<>();
+    public Set<Short> disEggs = new HashSet<>();
+    public Set<Spawnable> disMobs = new HashSet<>();
+    public Set<String> disReasons = new HashSet<>();
+    public Set<Item> blockedBlocks = new HashSet<>();
+    public Set<Potion> ampedPots = new HashSet<>();
     private boolean[] b = new boolean[24];
     private long[] l = new long[2];
 
@@ -91,7 +91,7 @@ public class WorldConfiguration extends ConfigLoader {
             return false;
         } else if (rev == 1.0) {
             super.set("Settings.Config_Revision", 1.1);
-            List<String> list = new ArrayList<String>();
+            List<String> list = new ArrayList<>();
             list.add(SpawnReason.LIGHTNING.toString().toLowerCase());
             super.set("SpawnManager.Disallowed_Reasons", list);
             return false;
@@ -133,13 +133,13 @@ public class WorldConfiguration extends ConfigLoader {
         } else if (rev == 1.7) {
             super.set("Settings.Config_Revision", 1.8);
             super.set("PotionManager.Enabled", false);
-            List<String> list = new ArrayList<String>();
+            List<String> list = new ArrayList<>();
             list.add("Potion:16426");
-            super.set("PotionManager.DisableThrowing", new ArrayList<String>(list));
-            super.set("PotionManager.DisableDispensing", new ArrayList<String>(list));
+            super.set("PotionManager.DisableThrowing", new ArrayList<>(list));
+            super.set("PotionManager.DisableDispensing", new ArrayList<>(list));
             list.clear();
             list.add("Potion:16418:0.1");
-            super.set("PotionManager.IntensityModifier", new ArrayList<String>(list));
+            super.set("PotionManager.IntensityModifier", new ArrayList<>(list));
             plugin.getLogger().info("Successfully updated " + fileName + " to 1.8");
             return false;
         } else {

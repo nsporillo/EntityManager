@@ -25,8 +25,7 @@ public abstract class BaseCommand implements Command {
     }
 
     public final void addUsage(String desc, String... uses) {
-        final StringBuilder usage = new StringBuilder().append(BLUE).append(
-                String.format("%1$-" + 8 + "s", this.name));
+        final StringBuilder usage = new StringBuilder().append(BLUE).append(String.format("%1$-" + 8 + "s", this.name));
         boolean color = true;
         for (String use : uses) {
             if (color)
@@ -70,8 +69,7 @@ public abstract class BaseCommand implements Command {
     @Override
     public void showHelp(final CommandSender sender, final String label) {
         for (final String usage : this.usages) {
-            sender.sendMessage(GRAY + String.format("%1$-" + 10 + "s", label)
-                    + ChatColor.translateAlternateColorCodes('&', usage));
+            sender.sendMessage(GRAY + String.format("%1$-" + 10 + "s", label) + ChatColor.translateAlternateColorCodes('&', usage));
         }
     }
 }

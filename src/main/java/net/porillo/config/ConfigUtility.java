@@ -147,7 +147,7 @@ public class ConfigUtility {
         Set<Spawnable> l = wc.disMobs;
         for (String s : wc.c.getStringList("SpawnManager.Disallowed_Mobs")) {
             try {
-                if (s.indexOf(":") == -1) {
+                if (!s.contains(":")) {
                     l.add(new Spawnable(EntityType.valueOf(s.toUpperCase()), ALL));
                 } else {
                     // ex. zombie:baby sheep:red sheep:baby:black

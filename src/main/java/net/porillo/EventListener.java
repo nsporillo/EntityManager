@@ -41,7 +41,7 @@ import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
 public class EventListener extends Utility implements Listener {
 
-    private Map<String, List<ItemStack>> drops = new HashMap<String, List<ItemStack>>();
+    private Map<String, List<ItemStack>> drops = new HashMap<>();
     private Set<Entity> mobs = new HashSet<Entity>();
 
     public EventListener(EntityManager manager) {
@@ -241,7 +241,6 @@ public class EventListener extends Utility implements Listener {
                     e.setCancelled(true);
                     warn(conf, pl, Potion.fromItemStack(e.getItem()));
                 }
-                return;
             } else {
                 if (conf.usage(e.getItem().getTypeId())) {
                     if (!hasPermission(pl, iUITEM + str)) {
@@ -401,13 +400,11 @@ public class EventListener extends Utility implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onThunderChange(ThunderChangeEvent e) {
-        boolean b = e.toThunderState();
-        e.setCancelled(b ? getConfig(e.getWorld()).get(THUNDER) : false);
+        e.setCancelled(e.toThunderState() && getConfig(e.getWorld()).get(THUNDER));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onWeatherChange(WeatherChangeEvent e) {
-        boolean b = e.toWeatherState();
-        e.setCancelled(b ? getConfig(e.getWorld()).get(RAIN) : false);
+        e.setCancelled(e.toWeatherState() && getConfig(e.getWorld()).get(RAIN));
     }
 }

@@ -15,7 +15,6 @@ public class Potion extends Item {
 
     @Override
     public String toString() {
-        return "Potion [mult=" + mult + ", getId()=" + getId() + ", getDurability()="
-                + getDurability() + "]";
+        return "Potion [mult=" + mult + ", getId()=" + getId() + ", getDurability()=" + getDurability() + "]";
     }
 }
