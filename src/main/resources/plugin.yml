@@ -1,10 +1,10 @@
 name: EntityManager
 author: milkywayz 
 main: net.porillotityManager
-version: 5.6
+version: ${project.version}
 commands:   
     entitymanager:      
       aliases: em      
-      description: The main command for entitymanager
+      description: The main command for EntityManager
 
   
