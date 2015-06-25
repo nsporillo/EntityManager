@@ -2,8 +2,8 @@ package net.porillo.types;
 
 public enum Type {
 
-	BOTH,
-	BABY,
-	VILLAGER,
-	ALL;
+    BOTH,
+    BABY,
+    VILLAGER,
+    ALL;
 }
