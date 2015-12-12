@@ -25,10 +25,6 @@ public class Spawnable {
         return type;
     }
 
-    public String getName() {
-        return this.getType().toString();
-    }
-
     public Type getBreed() {
         return this.meta.getType();
     }
