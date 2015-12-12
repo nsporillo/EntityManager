@@ -296,7 +296,7 @@ public class EventListener extends Utility implements Listener {
         Player pl = e.getEntity();
         WorldConfiguration conf = getConfig(pl.getWorld());
         if (hasPermission(pl, dKITEM) || conf.get(PDEATHITEMS)) {
-            drops.put(pl.getName(), e.getDrops());
+            drops.put(pl.getName(), new ArrayList<ItemStack>(e.getDrops()));
             e.getDrops().clear();
         }
         if (hasPermission(pl, dKEEXP) || conf.get(PDEATHEXP)) {
@@ -315,9 +315,11 @@ public class EventListener extends Utility implements Listener {
                     WorldConfiguration wc = getConfig(p.getWorld());
                     al(wc, "Player " + p.getName() + " respawned with their items");
                     al(wc, p, "&6Your items were returned after death!");
-                    for (ItemStack is : drops.get(p.getName()))
-                        if (is != null)
+                    for (ItemStack is : drops.get(p.getName())) {
+                        if (is != null) {
                             p.getInventory().addItem(is);
+                        }
+                    }
                     drops.remove(p.getName());
                 }
             }, 1L);
