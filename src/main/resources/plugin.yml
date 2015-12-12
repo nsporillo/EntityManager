@@ -1,10 +1,45 @@
 name: EntityManager
 author: milkywayz 
-main: net.porillotityManager
+main: net.porillo.EntityManager
 version: ${project.version}
 commands:   
     entitymanager:      
       aliases: em      
       description: The main command for EntityManager
 
-  
+permissions:
+  entitymanager.*:
+    description: Gives access to all commands
+    children:
+      entitymanager.admin.*: true
+      entitymanager.interact.*: true
+      entitymanager.death.*: false
+  entitymanager.admin.*:
+    description: Gives access to all admin commands
+    default: false
+    children:
+      entitymanager.admin.alert: true
+      entitymanager.admin.reload: true
+      entitymanager.admin.dump: true
+  entitymanager.death.*:
+    description: Wont drop exp or items on death with this permission
+    default: false
+    children:
+      entitymanager.death.keepitems: false
+      entitymanager.death.keepexp: false
+  entitymanager.interact.*:
+    description: Allows interaction with everything regardless of config settings
+    default: false
+    children:
+      entitymanager.interact.trade: true
+      entitymanager.interact.shoot: true
+      entitymanager.interact.pvp: true
+      entitymanager.interact.enchant: true
+      entitymanager.interact.anvil: true
+      entitymanager.interact.fishing: true
+      entitymanager.interact.potion: true
+      entitymanager.interact.ender_pearl: true
+      entitymanager.interact.exp_bottle: true
+      entitymanager.interact.snow_ball: true
+      entitymanager.interact.egg: true
+      entitymanager.interact.: true
