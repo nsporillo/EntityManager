@@ -7,6 +7,7 @@ import org.bukkit.entity.EntityType;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -14,12 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class LogFile {
+public class DumpManager {
 
-    private static String[] names = {"Amplified Potions", "Blocked Blocks", "Disabled Eggs",
-            "Disabled Mobs", "Dispenser Block", "Disabled Reasons", "Usage Block"};
+    private static String[] names = {"Amplified Potions", "Disabled Blocks", "Disabled Eggs",
+            "Disabled Mobs", "Dispenser Block", "Disabled Spawn-Reasons", "Disabled Item-Usage"};
 
-    public static int newDump(EntityManager em) {
+    public static String newDump(EntityManager em) {
         List<String> lines = new ArrayList<String>();
 
         for (WorldConfiguration wc : em.getWorlds()) {
@@ -34,11 +35,11 @@ public class LogFile {
             lines.add("=================================================================");
         }
         try {
-            writeDump(System.currentTimeMillis() + ".log", lines);
+            return writeDump(System.currentTimeMillis() + ".log", lines);
         } catch (IOException e) {
             e.printStackTrace();
+            return "<error>";
         }
-        return lines.size();
     }
 
     @SuppressWarnings({"unchecked", "deprecation"})
@@ -61,13 +62,13 @@ public class LogFile {
         return list;
     }
 
-    private static void writeDump(String aFileName, List<String> aLines) throws IOException {
-        Path path = Paths.get(aFileName);
-        try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+    private static String writeDump(String aFileName, List<String> aLines) throws IOException {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(aFileName), StandardCharsets.UTF_8)) {
             for (String line : aLines) {
                 writer.write(line);
                 writer.newLine();
             }
         }
+        return aFileName;
     }
 }
