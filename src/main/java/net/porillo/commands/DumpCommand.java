@@ -1,7 +1,7 @@
 package net.porillo.commands;
 
+import net.porillo.DumpManager;
 import net.porillo.EntityManager;
-import net.porillo.LogFile;
 import net.porillo.types.Permission;
 import org.bukkit.command.CommandSender;
 
@@ -24,7 +24,8 @@ public class DumpCommand extends BaseCommand {
             this.noPermission(s);
             return;
         }
-        int lines = LogFile.newDump(super.plugin);
-        s.sendMessage(BLUE + "Generated log file with " + GREEN + lines + " lines");
+        String name = DumpManager.newDump(super.plugin);
+        plugin.getLogger().info("Generated log file " + name + "in root server directory");
+        s.sendMessage(BLUE + "Generated log file (" + GREEN + name + ")" + BLUE + " in root server directory.");
     }
 }
