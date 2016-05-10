@@ -18,12 +18,6 @@ public class TimeManager {
 
     private void start(EntityManager em, String name, final long target, long every) {
         final World world = Bukkit.getWorld(name);
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(em, new Runnable() {
-
-            @Override
-            public void run() {
-                world.setTime(target);
-            }
-        }, every, every);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(em, () -> world.setTime(target), every, every);
     }
 }
