@@ -6,7 +6,7 @@
 
     <groupId>net.porillo</groupId>
     <artifactId>EntityManager</artifactId>
-    <version>5.6.1</version>
+    <version>5.6.2</version>
     <packaging>jar</packaging>
 
     <name>EntityManager</name>
