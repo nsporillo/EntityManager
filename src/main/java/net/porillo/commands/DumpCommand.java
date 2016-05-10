@@ -10,8 +10,9 @@ import java.util.List;
 import static org.bukkit.ChatColor.BLUE;
 import static org.bukkit.ChatColor.GREEN;
 
-public class DumpCommand extends BaseCommand {
-    public DumpCommand(EntityManager plugin) {
+class DumpCommand extends BaseCommand {
+
+    DumpCommand(EntityManager plugin) {
         super(plugin);
         super.setName("dump");
         super.addUsage("Generates memory dump file");
@@ -24,6 +25,7 @@ public class DumpCommand extends BaseCommand {
             this.noPermission(s);
             return;
         }
+
         String name = DumpManager.newDump(super.plugin);
         plugin.getLogger().info("Generated log file " + name + "in root server directory");
         s.sendMessage(BLUE + "Generated log file (" + GREEN + name + ")" + BLUE + " in root server directory.");

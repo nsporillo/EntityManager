@@ -12,29 +12,33 @@ import static org.bukkit.ChatColor.*;
 /**
  * @author krinsdeath
  */
-public abstract class BaseCommand implements Command {
+abstract class BaseCommand implements Command {
 
-    protected EntityManager plugin;
-    protected String name;
-    protected String permission;
-    protected int required = 0;
-    protected List<String> usages = new ArrayList<String>();
+    EntityManager plugin;
+    private String name;
+    private String permission;
+    private int required = 0;
+    private List<String> usages = new ArrayList<>();
 
-    public BaseCommand(final EntityManager plugin) {
+    BaseCommand(final EntityManager plugin) {
         this.plugin = plugin;
     }
 
-    public final void addUsage(String desc, String... uses) {
+    final void addUsage(String desc, String... uses) {
         final StringBuilder usage = new StringBuilder().append(BLUE).append(String.format("%1$-" + 8 + "s", this.name));
         boolean color = true;
+
         for (String use : uses) {
-            if (color)
+            if (color) {
                 usage.append(YELLOW);
-            else
+            } else {
                 usage.append(AQUA);
+            }
+
             color = !color;
             usage.append(String.format("%1$-" + 8 + "s", use));
         }
+
         usage.append(GREEN);
         usage.append(desc);
         this.usages.add(usage.toString());
@@ -54,15 +58,15 @@ public abstract class BaseCommand implements Command {
         this.required = req;
     }
 
-    protected void noPermission(final CommandSender sender) {
+    void noPermission(final CommandSender sender) {
         sender.sendMessage(RED + "You do not have permission to use that command!");
     }
 
-    protected final void setName(final String name) {
+    final void setName(final String name) {
         this.name = name;
     }
 
-    protected final void setPermission(final String perm) {
+    final void setPermission(final String perm) {
         this.permission = perm;
     }
 
