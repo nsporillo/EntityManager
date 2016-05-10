@@ -5,5 +5,5 @@ public enum Type {
     BOTH,
     BABY,
     VILLAGER,
-    ALL;
+    ALL
 }

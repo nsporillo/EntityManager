@@ -6,39 +6,42 @@ import org.bukkit.plugin.Plugin;
 
 import java.io.*;
 
-public abstract class ConfigLoader {
+abstract class ConfigLoader {
 
-    protected FileConfiguration c;
-    protected String fileName;
-    protected Plugin plugin;
-    protected File configFile;
+    FileConfiguration c;
+    String fileName;
+    Plugin plugin;
+    private File configFile;
 
-    public ConfigLoader(Plugin plugin, String fileName) {
+    ConfigLoader(Plugin plugin, String fileName) {
         this.plugin = plugin;
         this.fileName = fileName;
         File dataFolder = plugin.getDataFolder();
         configFile = new File(dataFolder, File.separator + fileName);
+
         if (!configFile.exists()) {
             if (!dataFolder.exists()) {
                 dataFolder.mkdir();
-                dataFolder = plugin.getDataFolder();
             }
+
             try {
                 configFile.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
             writeConfig(plugin.getResource("config.yml"));
         }
+
         c = YamlConfiguration.loadConfiguration(configFile);
     }
 
-    protected void addDefaults() {
+    private void addDefaults() {
         c.options().copyDefaults(true);
         saveConfig();
     }
 
-    public void load() {
+    void load() {
         if (!configFile.exists()) {
             plugin.getDataFolder().mkdir();
             saveConfig();
@@ -51,11 +54,11 @@ public abstract class ConfigLoader {
 
     protected abstract void reload();
 
-    protected void rereadFromDisk() {
+    void rereadFromDisk() {
         c = YamlConfiguration.loadConfiguration(configFile);
     }
 
-    protected void saveConfig() {
+    void saveConfig() {
         try {
             c.save(configFile);
         } catch (IOException ex) {
@@ -63,7 +66,7 @@ public abstract class ConfigLoader {
         }
     }
 
-    protected void saveIfNotExist() {
+    void saveIfNotExist() {
         if (!configFile.exists())
             if (plugin.getResource(fileName) != null) {
                 plugin.getLogger().info("Saving " + fileName + " to disk");
@@ -72,11 +75,11 @@ public abstract class ConfigLoader {
         rereadFromDisk();
     }
 
-    protected void set(String key, Object value) {
+    void set(String key, Object value) {
         c.set(key, value);
     }
 
-    protected void writeConfig(InputStream in) {
+    private void writeConfig(InputStream in) {
         OutputStream out = null;
         try {
             out = new FileOutputStream(configFile);

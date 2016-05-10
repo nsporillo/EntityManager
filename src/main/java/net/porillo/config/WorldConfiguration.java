@@ -14,8 +14,9 @@ import java.util.logging.Logger;
 
 public class WorldConfiguration extends ConfigLoader {
 
+    private static final double REV = 1.8;
+
     private final String world;
-    private final double REV = 1.8;
     public Set<Item> usageBlock = new HashSet<>();
     public Set<Item> dispBlock = new HashSet<>();
     public Set<Short> disEggs = new HashSet<>();
@@ -80,7 +81,7 @@ public class WorldConfiguration extends ConfigLoader {
     }
 
     private boolean performUpdate(double rev) {
-        if (this.REV == rev)
+        if (REV == rev)
             return true;
 
         if (rev == 0.1) {

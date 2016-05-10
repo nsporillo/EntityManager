@@ -11,9 +11,9 @@ import java.util.Set;
 
 import static net.porillo.types.Type.*;
 
-public class ConfigUtility {
+class ConfigUtility {
 
-    public static void load(WorldConfiguration wc) {
+    static void load(WorldConfiguration wc) {
         ConfigUtility.loadBlockedItems(wc);
         ConfigUtility.loadBlockedDispenserItems(wc);
         ConfigUtility.loadBlockedInteractionBlocks(wc);
@@ -32,6 +32,7 @@ public class ConfigUtility {
             } catch (Exception ex) {
                 if (s.toLowerCase().startsWith("potion")) {
                     String[] args = s.split(":");
+
                     try {
                         Integer id = Integer.parseInt(args[1]);
                         wc.usageBlock.add(new Item(373, id));
@@ -39,6 +40,7 @@ public class ConfigUtility {
                         wc.getLog().severe("Invalid value: " + s);
                         wc.getLog().severe("Potion format=> \"potion:#\"");
                     }
+
                 } else {
                     wc.getLog().severe("Invalid value: " + s);
                     wc.getLog().severe("Reference: http://goo.gl/f1Nmb");
@@ -60,6 +62,7 @@ public class ConfigUtility {
             for (String s : wc.c.getStringList("PotionManager.IntensityModifier")) {
                 if (s.toLowerCase().startsWith("potion")) {
                     String[] args = s.split(":");
+
                     try {
                         Integer id = Integer.parseInt(args[1]);
                         Double mult = Double.parseDouble(args[2]);
@@ -68,6 +71,7 @@ public class ConfigUtility {
                         wc.getLog().severe("Invalid value: " + s);
                         wc.getLog().severe("Potion format=> \"potion:#\"");
                     }
+
                 } else {
                     wc.getLog().severe("Invalid value: " + s);
                     wc.getLog().severe("Potion format=> \"potion:#\"");
@@ -80,6 +84,7 @@ public class ConfigUtility {
         for (String s : wc.c.getStringList(val)) {
             if (s.toLowerCase().startsWith("potion")) {
                 String[] args = s.split(":");
+
                 try {
                     Integer id = Integer.parseInt(args[1]);
                     add.add(new Item(373, id));
@@ -87,6 +92,7 @@ public class ConfigUtility {
                     wc.getLog().severe("Invalid value: " + s);
                     wc.getLog().severe("Potion format=> \"potion:#\"");
                 }
+
             } else {
                 wc.getLog().severe("Invalid value: " + s);
                 wc.getLog().severe("Potion format=> \"potion:#\"");
@@ -99,10 +105,11 @@ public class ConfigUtility {
         for (String s : wc.c.getStringList("Disable.Interaction.Blocked_Blocks")) {
             try {
                 Material mat = Material.valueOf(s.toUpperCase());
-                if (mat.isBlock())
+                if (mat.isBlock()) {
                     wc.blockedBlocks.add(new Item(mat.getId()));
-                else
+                } else {
                     wc.getLog().severe("Material: " + mat.toString() + " is not a block!");
+                }
 
             } catch (Exception ex) {
                 wc.getLog().severe("Invalid value: " + s);
@@ -122,7 +129,7 @@ public class ConfigUtility {
                 if (s.toLowerCase().startsWith("potion")) {
                     String[] args = s.split(":");
                     Integer id = Integer.parseInt(args[1]);
-                    wc.dispBlock.add(new Item(373, id.intValue()));
+                    wc.dispBlock.add(new Item(373, id));
                 } else {
                     wc.getLog().severe("Invalid value: " + s);
                     wc.getLog().severe("Reference: http://goo.gl/f1Nmb");
@@ -145,6 +152,7 @@ public class ConfigUtility {
 
     private static void loadBlockedEntities(WorldConfiguration wc) {
         Set<Spawnable> l = wc.disMobs;
+
         for (String s : wc.c.getStringList("SpawnManager.Disallowed_Mobs")) {
             try {
                 if (!s.contains(":")) {
@@ -155,22 +163,22 @@ public class ConfigUtility {
                     EntityType t = EntityType.valueOf(a[0].toUpperCase());
                     String s1 = t.toString();
                     String s2 = a[1].toUpperCase();
+
                     if (a.length == 2) {
                         Meta meta;
+
                         try {
                             meta = new Meta(Type.valueOf(s2));
                         } catch (Exception ex) {
                             meta = new Meta(ALL, DyeColor.valueOf(s2).getColor());
                         }
+
                         l.add(new Spawnable(t, meta));
                     } else if (a.length == 3) {
                         String s3 = a[2].toUpperCase();
-                        if (s1.equals("ZOMBIE")) {
-                            if (s2.equals("BABY") || s2.equals("VILLAGER")) {
-                                if (s3.equals("BABY") || s3.equals("VILLAGER")) {
-                                    l.add(new Spawnable(t, BOTH));
-                                }
-                            }
+
+                        if (s1.equals("ZOMBIE") && (s2.equals("BABY") || s2.equals("VILLAGER") && (s3.equals("BABY") || s3.equals("VILLAGER")))) {
+                            l.add(new Spawnable(t, BOTH));
                         } else if (s1.equals("SHEEP")) {
                             if (s2.equals("BABY")) {
                                 Color c = DyeColor.valueOf(s3).getColor();
