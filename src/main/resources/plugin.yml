@@ -2,8 +2,7 @@ name: EntityManager
 author: milkywayz 
 main: net.porillo.EntityManager
 version: ${project.version}
-api-version: 1.13
-commands:   
+commands:
     entitymanager:      
       aliases: em      
       description: The main command for EntityManager

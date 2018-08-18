@@ -204,7 +204,7 @@ public class EventListener extends Utility implements Listener {
             Player p = e.getPlayer();
             ItemStack is = p.getItemInHand();
 
-            if (conf.isDisabledMob(type) && is.getType() == Material.INK_SAC) {
+            if (conf.isDisabledMob(type) && is.getType() == Material.INK_SACK) {
                 DyeColor dc = DyeColor.getByDyeData((byte) is.getDurability());
                 String c = dc.toString().toLowerCase();
                 Sheep sheep = (Sheep) e.getRightClicked();
@@ -234,7 +234,7 @@ public class EventListener extends Utility implements Listener {
             WorldConfiguration conf = getConfig(e.getPlayer().getWorld());
             String itemName = e.getItem().getType().toString().toLowerCase();
 
-            if (e.getItem().getType().equals(Material.FIREWORK_ROCKET)) {
+            if (e.getItem().getType().equals(Material.FIREWORK)) {
                 if (conf.get(FIREWORKS) && !hasPermission(e.getPlayer(), iUITEM + itemName)) {
                     e.setUseItemInHand(Result.DENY);
                     e.setCancelled(true);
@@ -440,23 +440,19 @@ public class EventListener extends Utility implements Listener {
             case LLAMA_SPIT:
                 break;
             case SNOWBALL:
-                matType = Material.SNOWBALL;
+                matType = Material.SNOW_BALL;
                 break;
             case SPECTRAL_ARROW:
                 matType = Material.SPECTRAL_ARROW;
                 break;
             case THROWN_EXP_BOTTLE:
-                matType = Material.EXPERIENCE_BOTTLE;
+                matType = Material.EXP_BOTTLE;
                 englishType = "experience bottle";
                 break;
             case TIPPED_ARROW:
                 matType = Material.TIPPED_ARROW;
                 break;
-            case TRIDENT:
-                matType = Material.TRIDENT;
-                break;
             case WITHER_SKULL:
-                matType = Material.WITHER_SKELETON_SKULL;
                 break;
             default:
                 try {

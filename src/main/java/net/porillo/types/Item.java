@@ -32,6 +32,6 @@ public class Item {
 
     @Override
     public String toString() {
-        return "Item [type=" + type.getKey() + ", dura=" + dura + "]";
+        return "Item [type=" + type.name() + ", dura=" + dura + "]";
     }
 }
