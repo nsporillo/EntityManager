@@ -437,8 +437,6 @@ public class EventListener extends Utility implements Listener {
                 break;
             case SMALL_FIREBALL:
                 break;
-            case LLAMA_SPIT:
-                break;
             case SNOWBALL:
                 matType = Material.SNOW_BALL;
                 break;
