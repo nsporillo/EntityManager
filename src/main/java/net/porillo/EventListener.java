@@ -1,12 +1,12 @@
 package net.porillo;
 
 import net.porillo.config.WorldConfiguration;
+import net.porillo.types.Potion;
 import net.porillo.types.Type;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
@@ -26,7 +26,8 @@ import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.Potion;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.*;
@@ -51,19 +52,12 @@ public class EventListener extends Utility implements Listener {
 
     private void handleSpawnTry(Player pl, String str, PlayerInteractEvent e, WorldConfiguration c) {
         if (!hasPermission(pl, sNTITY + str)) {
-            Block cb = e.getClickedBlock();
 
-            if (shouldBlock(cb)) {
-                e.setUseItemInHand(Result.DENY);
-                e.setCancelled(true);
-                al(c, pl, "&cSwitch item in hand to use " + cb.getType().name().toLowerCase());
-                return;
-            }
-
+            String alert = str.replaceAll("_", " ");
             e.setUseItemInHand(Result.DENY);
             e.setCancelled(true);
-            al(c, "Player " + pl.getName() + " tried to spawn a " + str);
-            al(c, pl, "&cYou don't have permission to spawn " + str + "s.");
+            alertAdminsAndLog(c, "Player " + pl.getName() + " tried to spawn use " + alert);
+            alertPlayer(c, pl, "&cYou don't have permission to use " + alert + "s.");
         }
     }
 
@@ -75,10 +69,10 @@ public class EventListener extends Utility implements Listener {
 
             if (conf.get(ENCHANTING) && !hasPermission(pl, iANVIL)) {
                 e.setCancelled(true);
-                al(conf, "Player " + pl.getName() + " tried to enchant a "
+                alertAdminsAndLog(conf, "Player " + pl.getName() + " tried to enchant a "
                         + e.getCurrentItem().getType().toString().toLowerCase()
                         + " in an anvil.");
-                al(conf, pl, "&cYou don't have permission to use anvils.");
+                alertPlayer(conf, pl, "&cYou don't have permission to use anvils.");
             }
         }
     }
@@ -91,8 +85,8 @@ public class EventListener extends Utility implements Listener {
 
             if (conf.get(SHOOTING) && !hasPermission(pl, iSHOOT)) {
                 e.setCancelled(true);
-                al(conf, "Player " + pl.getName() + " tried to shoot a bow.");
-                al(conf, pl, "&cYou don't have permission to shoot bows.");
+                alertAdminsAndLog(conf, "Player " + pl.getName() + " tried to shoot a bow.");
+                alertPlayer(conf, pl, "&cYou don't have permission to shoot bows.");
             }
 
         }
@@ -104,10 +98,10 @@ public class EventListener extends Utility implements Listener {
         WorldConfiguration conf = getConfig(e.getBlock().getWorld());
         ItemStack is = e.getItem();
 
-        if (is.getType() == Material.POTION) {
-            e.setCancelled(conf.dispensePotion(is.getDurability()));
+        if (is.getType().name().contains("POTION")) {
+            e.setCancelled(conf.dispensePotion(is));
         } else {
-            e.setCancelled(conf.dispense(is.getTypeId()));
+            e.setCancelled(conf.dispense(is.getType()));
         }
     }
 
@@ -141,13 +135,13 @@ public class EventListener extends Utility implements Listener {
         LivingEntity en = e.getEntity();
         WorldConfiguration conf = getConfigByEntity(en);
 
-        if (conf.get(SDISABLE) || conf.getSet5().contains(e.getSpawnReason().toString())) {
+        if (conf.get(SDISABLE) || conf.getDisabledSpawnReasons().contains(e.getSpawnReason().toString())) {
             e.setCancelled(true);
             return;
         }
 
         EntityType type = e.getEntityType();
-        if (conf.has(type)) {
+        if (conf.isDisabledMob(type)) {
             if (en instanceof Ageable) {
                 if (en instanceof Sheep) {
                     Sheep sheep = (Sheep) en;
@@ -201,8 +195,7 @@ public class EventListener extends Utility implements Listener {
 
             if (conf.get(TRADING) && !hasPermission(pl, iTRADE)) {
                 e.setCancelled(true);
-                al(conf, "Player " + pl.getName() + " tried to trade ");
-                al(conf, pl, "&cYou don't have permission to trade.");
+                alertPlayer(conf, pl, "&cYou don't have permission to trade.");
             }
 
         } else if (e.getRightClicked() instanceof Sheep) {
@@ -211,7 +204,7 @@ public class EventListener extends Utility implements Listener {
             Player p = e.getPlayer();
             ItemStack is = p.getItemInHand();
 
-            if (conf.has(type) && is.getType() == Material.INK_SACK) {
+            if (conf.isDisabledMob(type) && is.getType() == Material.INK_SAC) {
                 DyeColor dc = DyeColor.getByDyeData((byte) is.getDurability());
                 String c = dc.toString().toLowerCase();
                 Sheep sheep = (Sheep) e.getRightClicked();
@@ -223,9 +216,9 @@ public class EventListener extends Utility implements Listener {
                 }
 
                 if (e.isCancelled()) {
-                    al(conf, p, "&cThat color of sheep is blocked (" + c + ")");
-                    al(conf, p, "&cDye apply was client side - relog :)");
-                    al(conf, "Player " + p.getName() + " tried to dye a sheep " + c);
+                    alertPlayer(conf, p, "&cThat color of sheep is blocked (" + c + ")");
+                    alertPlayer(conf, p, "&cDye apply was client side - relog :)");
+                    alertAdminsAndLog(conf, "Player " + p.getName() + " tried to dye a sheep " + c);
                 }
             }
         }
@@ -239,48 +232,42 @@ public class EventListener extends Utility implements Listener {
 
         if (e.getAction() == RIGHT_CLICK_AIR || e.getAction() == RIGHT_CLICK_BLOCK) {
             WorldConfiguration conf = getConfig(e.getPlayer().getWorld());
-            Player pl = e.getPlayer();
-            String str = e.getItem().getType().toString().toLowerCase();
+            String itemName = e.getItem().getType().toString().toLowerCase();
 
-            if (shouldBlock(e.getClickedBlock())) {
-                e.setUseItemInHand(Result.DENY);
-                return;
-            }
-
-            if (e.getItem().getType().equals(Material.FIREWORK)) {
-                if (conf.get(FIREWORKS) && !hasPermission(pl, iUITEM + str)) {
+            if (e.getItem().getType().equals(Material.FIREWORK_ROCKET)) {
+                if (conf.get(FIREWORKS) && !hasPermission(e.getPlayer(), iUITEM + itemName)) {
                     e.setUseItemInHand(Result.DENY);
                     e.setCancelled(true);
-                    al(conf, "Player " + pl.getName() + " tried to use a firework.");
-                    al(conf, pl, "&cYou don't have permission to use fireworks.");
+                    alertAdminsAndLog(conf, "Player " + e.getPlayer().getName() + " tried to use a firework.");
+                    alertPlayer(conf, e.getPlayer(), "&cYou don't have permission to use fireworks.");
                 }
-            } else if (e.getItem().getType().equals(Material.MONSTER_EGG)) {
+            } else if (e.getItem().getType().name().endsWith("SPAWN_EGG")) {
                 if (conf.get(EDISABLE))
-                    handleSpawnTry(pl, str, e, conf);
+                    handleSpawnTry(e.getPlayer(), itemName, e, conf);
                 else {
                     EntityType type = fromId(e.getItem().getDurability());
 
-                    if (conf.getSet3().contains(type.getTypeId()))
-                        handleSpawnTry(pl, str, e, conf);
+                    if (conf.getDisabledSpawnEggs().contains(type))
+                        handleSpawnTry(e.getPlayer(), itemName, e, conf);
                 }
-            } else if (e.getItem().getType() == Material.POTION) {
-                short dura = e.getItem().getDurability();
+            } else if (e.getItem().getType().name().contains("POTION")) {
+                String potionPerm = Potion.getPotionPermission(e.getItem());
 
-                if (hasPermission(pl, iPTION) || hasPermission(pl, iPTION + "." + dura))
+                if (hasPermission(e.getPlayer(), iPTION) || hasPermission(e.getPlayer(), iPTION + "." + potionPerm))
                     return;
 
-                if (conf.usagePotion(dura)) {
+                if (conf.usagePotion(e.getItem())) {
                     e.setUseItemInHand(Result.DENY);
                     e.setCancelled(true);
-                    warn(conf, pl, Potion.fromItemStack(e.getItem()));
+                    warnPotion(conf, e.getPlayer(), e.getItem());
                 }
             } else {
-                if (conf.usage(e.getItem().getTypeId()) && !hasPermission(pl, iUITEM + str)) {
-                    String item = str.replace("_", " ");
+                if (conf.usage(e.getItem().getType()) && !hasPermission(e.getPlayer(), iUITEM + itemName)) {
+                    String item = itemName.replace("_", " ");
                     e.setUseItemInHand(Result.DENY);
                     e.setCancelled(true);
-                    al(conf, "Player " + pl.getName() + " tried to use an " + item + ".");
-                    al(conf, pl, "&cYou don't have permission to use that &6" + item + "&c.");
+                    alertAdminsAndLog(conf, "Player " + e.getPlayer().getName() + " tried to use an " + item + ".");
+                    alertPlayer(conf, e.getPlayer(), "&cYou don't have permission to use that &6" + item + "&c.");
                 }
             }
         }
@@ -293,9 +280,9 @@ public class EventListener extends Utility implements Listener {
 
         if (conf.get(ENCHANTING) && !hasPermission(pl, iCHANT)) {
             e.setCancelled(true);
-            al(conf, "Player " + pl.getName() + " tried to enchant a "
+            alertAdminsAndLog(conf, "Player " + pl.getName() + " tried to enchant a "
                     + e.getItem().getType().toString().toLowerCase());
-            al(conf, pl, "&cYou don't have permission to enchant.");
+            alertPlayer(conf, pl, "&cYou don't have permission to enchant.");
         }
     }
 
@@ -312,13 +299,13 @@ public class EventListener extends Utility implements Listener {
 
             if (e.getDamager() instanceof Player) {
                 Player ag = ((Player) e.getDamager());
-                e.setCancelled(alert(conf, ag, attacked.getName()));
+                e.setCancelled(alertPlayerNoPvp(conf, ag, attacked.getName()));
             } else if (e.getDamager() instanceof Projectile && !(e.getDamager() instanceof EnderPearl)) {
                 ProjectileSource a = ((Projectile) e.getDamager()).getShooter();
 
                 if (a instanceof Player) {
                     Player p = (Player) a;
-                    e.setCancelled(alert(conf, p, attacked.getName()));
+                    e.setCancelled(alertPlayerNoPvp(conf, p, attacked.getName()));
                 }
             }
         }
@@ -347,8 +334,8 @@ public class EventListener extends Utility implements Listener {
         if (drops.containsKey(p.getName())) {
             Bukkit.getScheduler().runTaskLater(getHandle(), () -> {
                 WorldConfiguration wc = getConfig(p.getWorld());
-                al(wc, "Player " + p.getName() + " respawned with their items");
-                al(wc, p, "&6Your items were returned after death!");
+                alertAdminsAndLog(wc, "Player " + p.getName() + " respawned with their items");
+                alertPlayer(wc, p, "&6Your items were returned after death!");
 
                 for (ItemStack is : drops.get(p.getName())) {
                     if (is != null) {
@@ -369,8 +356,8 @@ public class EventListener extends Utility implements Listener {
 
             if (conf.get(PORTAL_CREATE) && !hasPermission(pl, cPRTAL)) {
                 e.setCancelled(true);
-                al(conf, "Player " + pl.getName() + " tried to create portals");
-                al(conf, pl, "&cYou don't have permission to create a portal.");
+                alertAdminsAndLog(conf, "Player " + pl.getName() + " tried to create portals");
+                alertPlayer(conf, pl, "&cYou don't have permission to create a portal.");
             }
         }
     }
@@ -380,22 +367,20 @@ public class EventListener extends Utility implements Listener {
         if (e.getEntity().getShooter() instanceof Player) {
             Player p = (Player) e.getEntity().getShooter();
             ItemStack is = e.getPotion().getItem();
-            short dura = is.getDurability();
 
             WorldConfiguration conf = getConfig(p.getWorld());
+            String potionPerm = Potion.getPotionPermission(is);
 
-            if (conf.usagePotion(is.getDurability())) {
-                if (hasPermission(p, iPTION) || hasPermission(p, iPTION + "." + dura)) {
+            if (conf.usagePotion(is)) {
+                if (hasPermission(p, iPTION) || hasPermission(p, iPTION + "." + potionPerm)) {
                     return;
                 }
                 e.setCancelled(true);
-                String potion = getName(Potion.fromItemStack(is)) + " potion";
-                al(conf, "Player " + p.getName() + " tried to use an " + potion + ".");
-                al(conf, p, "&cYou don't have permission to use that &6" + potion + "&c.");
+                warnPotion(conf, p, is);
                 return;
             }
 
-            double mult = conf.getMultiplier(is.getDurability());
+            double mult = conf.getMultiplier(is);
 
             for (LivingEntity le : e.getAffectedEntities()) {
                 double iten = e.getIntensity(le);
@@ -415,28 +400,78 @@ public class EventListener extends Utility implements Listener {
         Player p = (Player) e.getEntity().getShooter();
         EntityType type = e.getEntity().getType();
 
-        if (type == EGG) {
-            e.setCancelled(conf.usage(344) && !hasPermission(p, iTHEGG));
-        } else if (type == SNOWBALL) {
-            e.setCancelled(conf.usage(322) && !hasPermission(p, iTSNOW));
-        } else if (type == FISHING_HOOK) {
-            e.setCancelled(conf.get(FISHN) && !hasPermission(p, iFISHN));
-        } else if (type == THROWN_EXP_BOTTLE) {
-            e.setCancelled(conf.usage(384) && !hasPermission(p, iTEXPB));
-        } else if (type == ENDER_PEARL) {
-            e.setCancelled(conf.usage(368) && !hasPermission(p, iPEARL));
-        } else if (type == SPLASH_POTION) {
-            Potion pot = Potion.fromItemStack(p.getItemInHand());
+        if (type == SPLASH_POTION || type == LINGERING_POTION) {
+            ItemStack stack = p.getInventory().getItemInMainHand();
+            ItemMeta itemMeta = p.getInventory().getItemInMainHand().getItemMeta();
+            if (itemMeta instanceof PotionMeta) {
+                String potionPerm = Potion.getPotionPermission(stack);
 
-            if (conf.usagePotion(pot.getNameId()) && !hasPermission(p, iPTION + "_" + pot.getNameId())) {
-                e.setCancelled(true);
-                warn(conf, p, pot);
-                return;
+                if (!hasPermission(p, iPTION + "_" + potionPerm) && conf.usagePotion(stack)) {
+                    e.setCancelled(true);
+                    warnPotion(conf, p, stack);
+                }
             }
+
+            return; // dont continue because the catch-all will banish all potions! not good
         }
 
-        if (e.isCancelled()) {
-            alert(conf, p, type);
+        String englishType = null;
+        Material matType = null;
+
+        switch (type) {
+            case ARROW:
+                matType = Material.ARROW;
+                break;
+            case DRAGON_FIREBALL:
+                break;
+            case EGG:
+                matType = Material.EGG;
+                break;
+            case ENDER_PEARL:
+                matType = Material.ENDER_PEARL;
+                break;
+            case FIREBALL:
+                break;
+            case FISHING_HOOK:
+                matType = Material.FISHING_ROD;
+                break;
+            case SMALL_FIREBALL:
+                break;
+            case LLAMA_SPIT:
+                break;
+            case SNOWBALL:
+                matType = Material.SNOWBALL;
+                break;
+            case SPECTRAL_ARROW:
+                matType = Material.SPECTRAL_ARROW;
+                break;
+            case THROWN_EXP_BOTTLE:
+                matType = Material.EXPERIENCE_BOTTLE;
+                englishType = "experience bottle";
+                break;
+            case TIPPED_ARROW:
+                matType = Material.TIPPED_ARROW;
+                break;
+            case TRIDENT:
+                matType = Material.TRIDENT;
+                break;
+            case WITHER_SKULL:
+                matType = Material.WITHER_SKELETON_SKULL;
+                break;
+            default:
+                try {
+                    // last ditch attempt
+                    matType = Material.valueOf(type.name());
+                } catch(Exception ex) {
+                    getHandle().getLogger().severe("Recognized Projectile: " + type.name());
+                    getHandle().getLogger().severe("Unable to block this item from being launched! Contact support.");
+                }
+
+        }
+
+        if (matType != null && conf.usage(matType) && !hasPermission(p, matType.name().toLowerCase())) {
+            e.setCancelled(true);
+            alertPlayerNoPvp(conf, p, type, englishType);
         }
     }
 

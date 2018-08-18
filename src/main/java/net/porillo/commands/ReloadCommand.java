@@ -36,6 +36,6 @@ class ReloadCommand extends BaseCommand {
 
     private void reloadWorld(CommandSender s, WorldConfiguration c) {
         c.reload();
-        s.sendMessage(GREEN + "Configuration for " + c.getWorld() + " has been reloaded!");
+        s.sendMessage(GREEN + "Configuration for '" + c.getWorld() + "' has been reloaded!");
     }
 }

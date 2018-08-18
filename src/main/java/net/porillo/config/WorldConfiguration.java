@@ -3,8 +3,11 @@ package net.porillo.config;
 import net.porillo.EntityManager;
 import net.porillo.types.*;
 import org.bukkit.Color;
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -19,7 +22,7 @@ public class WorldConfiguration extends ConfigLoader {
     private final String world;
     public Set<Item> usageBlock = new HashSet<>();
     public Set<Item> dispBlock = new HashSet<>();
-    public Set<Short> disEggs = new HashSet<>();
+    public Set<EntityType> disEggs = new HashSet<>();
     public Set<Spawnable> disMobs = new HashSet<>();
     public Set<String> disReasons = new HashSet<>();
     public Set<Item> blockedBlocks = new HashSet<>();
@@ -64,7 +67,8 @@ public class WorldConfiguration extends ConfigLoader {
             load(21, "DeathManager.Entity.Drop_Items", true);
             load(22, "DeathManager.Player.Keep_Items", false);
             load(23, "Disable.Interaction.Portal_Creation", false);
-            ConfigUtility.load(this);
+
+            new ConfigListUtility(this).loadConfigLists();
         } else {
             super.saveConfig();
             super.rereadFromDisk();
@@ -164,86 +168,86 @@ public class WorldConfiguration extends ConfigLoader {
         return this.world;
     }
 
-    public Set<Short> getSet3() {
+    public Set<EntityType> getDisabledSpawnEggs() {
         return this.disEggs;
     }
 
-    public Set<String> getSet5() {
+    public Set<String> getDisabledSpawnReasons() {
         return this.disReasons;
     }
 
-    public boolean has(EntityType type) {
+    public boolean isDisabledMob(EntityType type) {
         for (Spawnable eme : this.disMobs)
             if (eme.getType() == type)
                 return true;
         return false;
     }
 
-    public boolean usage(int id) {
-        for (Item i : this.usageBlock)
-            if (i.getId() == id)
+    public boolean usage(Material type) {
+        for (Item i : this.usageBlock) {
+            if (i.getType() == type)
                 return true;
+        }
         return false;
     }
 
-    public boolean usagePotion(int pot) {
-        for (Item i : this.usageBlock)
-            if (i.getId() == 373)
-                if (i.getDurability() == pot)
-                    return true;
-        return false;
-    }
-
-    public double getMultiplier(int pot) {
-        double mult = 1;
-        for (Potion i : this.ampedPots)
-            if (pot == i.getDurability()) {
-                return i.getMultiplier();
+    public boolean usagePotion(ItemStack itemStack) {
+        for (Item item : this.usageBlock) {
+            if (item instanceof Potion && itemStack.getItemMeta() instanceof PotionMeta) {
+                return ((Potion) item).equalsStack(itemStack);
             }
-        return mult;
+        }
+        return false;
     }
 
-    public boolean dispensePotion(int pot) {
-        for (Item i : this.dispBlock)
-            if (i.getId() == 373)
-                if (i.getDurability() == pot)
-                    return true;
+    public double getMultiplier(ItemStack is) {
+        for (Potion potion : this.ampedPots) {
+            if (potion.equalsStack(is)) {
+                return potion.getMultiplier();
+            }
+        }
+
+        return 1.0;
+    }
+
+    public boolean dispensePotion(ItemStack itemStack) {
+        for (Item item : this.dispBlock) {
+            if (item instanceof Potion && itemStack.getItemMeta() instanceof PotionMeta) {
+                return ((Potion) item).equalsStack(itemStack);
+            }
+        }
 
         return false;
     }
 
-    public boolean dispense(int id) {
+    public boolean dispense(Material type) {
         for (Item i : this.dispBlock)
-            if (i.getId() == id)
+            if (i.getType() == type)
                 return true;
 
         return false;
     }
 
     public boolean block(EntityType etype, Type type) {
-        for (Spawnable eme : this.disMobs)
-            if (eme.getType() == etype)
-                if (eme.getBreed() == type)
-                    return true;
-
+        for (Spawnable eme : this.disMobs) {
+            if (eme.getType() == etype && eme.getBreed() == type) return true;
+        }
         return false;
     }
 
     public boolean block(EntityType etype, Type type, Color color) {
-        for (Spawnable eme : this.disMobs)
-            if (eme.getType() == etype)
-                if (eme.getBreed() == type)
-                    if (eme.getColor() == null || eme.getColor() == color)
-                        return true;
-
+        for (Spawnable eme : this.disMobs) {
+            if (eme.getType() == etype && eme.getBreed() == type && (eme.getColor() == null || eme.getColor() == color)) {
+                return true;
+            }
+        }
         return false;
     }
 
     public boolean block(EntityType etype, Color color) {
-        for (Spawnable eme : this.disMobs)
-            if (eme.getType() == etype)
-                if (eme.getColor() == null || eme.getColor() == color)
-                    return true;
+        for (Spawnable eme : this.disMobs) {
+            if (eme.getType() == etype && (eme.getColor() == null || eme.getColor() == color)) return true;
+        }
 
         return false;
     }
