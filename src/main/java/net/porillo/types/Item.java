@@ -1,21 +1,29 @@
 package net.porillo.types;
 
+import org.bukkit.Material;
+
 public class Item {
 
-    private int id;
+    private Material type;
     private int dura;
 
-    public Item(int id, int dura) {
-        this.id = id;
+    public Item(Material type, int dura) {
+        this.type = type;
         this.dura = dura;
     }
 
-    public Item(int id) {
-        this(id, 0);
+    public Item(Material type) {
+        this(type, 0);
     }
 
-    public int getId() {
-        return id;
+    public Item(){}
+
+    public Material getType() {
+        return type;
+    }
+
+    public void setType(Material type) {
+        this.type = type;
     }
 
     public int getDurability() {
@@ -24,6 +32,6 @@ public class Item {
 
     @Override
     public String toString() {
-        return "Item [id=" + id + ", dura=" + dura + "]";
+        return "Item [type=" + type.name() + ", dura=" + dura + "]";
     }
 }

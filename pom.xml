@@ -6,7 +6,7 @@
 
     <groupId>net.porillo</groupId>
     <artifactId>EntityManager</artifactId>
-    <version>5.6.2</version>
+    <version>6.0.0</version>
     <packaging>jar</packaging>
 
     <name>EntityManager</name>
@@ -44,7 +44,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.9.2-R0.1-SNAPSHOT</version>
+            <version>1.12-R0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <repositories>

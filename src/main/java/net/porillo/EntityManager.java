@@ -18,16 +18,11 @@ public class EntityManager extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        Bukkit.getScheduler().runTask(this, new Runnable() {
-
-            @Override
-            public void run() {
-                EntityManager.this.load();
-                new TimeManager(EntityManager.this);
-                getLogger().info(configs.size() + " worlds loaded");
-                new EventListener(EntityManager.this);
-            }
-
+        Bukkit.getScheduler().runTask(this, () -> {
+            EntityManager.this.loadWorldConfigurations();
+            new TimeManager(EntityManager.this);
+            getLogger().info(configs.size() + " worlds loaded");
+            new EventListener(EntityManager.this);
         });
     }
 
@@ -37,13 +32,13 @@ public class EntityManager extends JavaPlugin {
         return true;
     }
 
-    public void load() {
-        configs = new ArrayList<WorldConfiguration>();
+    public void loadWorldConfigurations() {
+        configs = new ArrayList<>();
         for (World w : Bukkit.getWorlds())
-            load(w.getName());
+            loadWorldConfigurations(w.getName());
     }
 
-    public WorldConfiguration load(String w) {
+    public WorldConfiguration loadWorldConfigurations(String w) {
         WorldConfiguration wc = new WorldConfiguration(this, w);
         configs.add(wc);
         return wc;

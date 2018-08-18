@@ -32,7 +32,7 @@ public class Permission {
 
     public final static String sNTITY = "entitymanager.spawn.";
 
-    public final static String aDMINA = "entitymanager.admin.alert";
+    public final static String aDMINA = "entitymanager.admin.alertPlayerNoPvp";
     public final static String aDMINR = "entitymanager.admin.reload";
     public final static String aDMIND = "entitymanager.admin.dump";
 

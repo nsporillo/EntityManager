@@ -25,7 +25,7 @@ Disable:
     - Trapped_Chest
   Usage:
     Blocked_Items:
-    - Exp_Bottle
+    - Experience_Bottle
     - Fireball
   Dispensing:
     Blocked_Items:
@@ -43,9 +43,9 @@ GrindManager:
 PotionManager:
   Enabled: false 
   DisableThrowing:
-  - Potion:16426
+  - Splash_Potion:INVISIBILITY:*:*
   DisableDispensing:
-  - Potion:16426
+  - Lingering_Potion:HEAL:2:*
   IntensityModifier:
   - Potion:16418:0.1
 TimeManager:
